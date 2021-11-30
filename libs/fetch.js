@@ -10,7 +10,7 @@ import fetch from "node-fetch"
  */
 function getSelectedChainConfig(chainName) {
     //get chains
-    let chainFile = chainName + ".json";
+    let chainFile = "chains/mainnet/" + chainName + ".json";
     let chain = JSON.parse(readFileSync(chainFile, 'utf-8'));
 
     if (!chain.sdk_version) {
@@ -21,7 +21,7 @@ function getSelectedChainConfig(chainName) {
 }
 
 /**
- * 
+ * get url from a chain
  * @param {String} chainName 
  * @param {String} url 
  * @param {*} config 
@@ -36,8 +36,25 @@ async function get(chainName, url, config = null) {
     return ret;
 }
 
-async function getBatch(url) {
+/**
+ * get batch url for batch chain
+ * @param {Array<*>} urlArr [{chainName: "", url: ""}, ...]
+ */
+async function getBatch(urlArr = [{chainName: "cosmos", url: ""}]) {
+    let retArr = []
+    
+    // asynchronously get from a batch of urls
+    await Promise.all(urlArr.map(async (ele) => {
+        if(ele.chainName == ""){
+            throw new Error("chain name is empty in one of element of urlArr")
+        }
 
+        const ret = await get(ele.chainName, ele.url);
+
+        retArr.push(ret);
+    }));
+
+    return retArr;
 }
 
 //============ END BASE GROUP ============
