@@ -20,10 +20,6 @@ function getSelectedChainConfig(chainName) {
     return chain;
 }
 
-function getBatchChainConfig(){
-
-}
-
 /**
  * 
  * @param {String} chainName 
@@ -41,7 +37,7 @@ async function get(chainName, url, config = null) {
 }
 
 async function getBatch(url) {
-    
+
 }
 
 //============ END BASE GROUP ============
