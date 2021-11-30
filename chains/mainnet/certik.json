@@ -1,9 +1,0 @@
-
-{
-    "chain_name": "certik",
-    "coingecko": "certik",
-    "api":"https://azuredragon.noopsbycertik.com",
-    "sdk_version": "0.42.9",
-    "addr_prefix": "certik",
-    "logo": "https://dl.airtable.com/.attachments/78bc9a7352de8ecd09e167d406d68582/2dcea633/dED92akm_400x400.jpg"
-}
