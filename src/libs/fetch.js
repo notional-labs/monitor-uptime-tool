@@ -360,7 +360,7 @@ export default class ChainFetch {
     }
     return null
   }
-  
+
   // CoinMarketCap
   static async fetchCoinMarketCap(url) {
     const host = 'https://price.ping.pub'
