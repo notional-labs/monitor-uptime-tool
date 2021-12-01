@@ -26,76 +26,6 @@ const router = new VueRouter({
         ],
       },
     },
-    {
-      path: '/wallet/setting',
-      name: 'setting',
-      component: () => import('@/views/WalletSetting.vue'),
-      meta: {
-        pageTitle: 'Setting',
-        breadcrumb: [
-          {
-            text: 'Setting',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/wallet/portfolio',
-      name: 'portfolio',
-      component: () => import('@/views/WalletPortfolio.vue'),
-      meta: {
-        pageTitle: 'Portfolio',
-        breadcrumb: [
-          {
-            text: 'Portfolio',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/wallet/accounts',
-      name: 'accounts',
-      component: () => import('@/views/WalletAccounts.vue'),
-      meta: {
-        pageTitle: 'Accounts',
-        breadcrumb: [
-          {
-            text: 'Accounts',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/wallet/import',
-      name: 'accounts-import',
-      component: () => import('@/views/WalletAccountImportAddress.vue'),
-      meta: {
-        pageTitle: 'Accounts',
-        breadcrumb: [
-          {
-            text: 'Import',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/wallet/address',
-      name: 'addresses',
-      component: () => import('@/views/WalletAddressBook.vue'),
-      meta: {
-        pageTitle: 'Address Book',
-        breadcrumb: [
-          {
-            text: 'Address Book',
-            active: true,
-          },
-        ],
-      },
-    },
     // chain modules
     {
       path: '/:chain/',
@@ -113,7 +43,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/uptime',
+      path: '/uptime',
       name: 'uptime',
       component: () => import('@/views/Uptime.vue'),
       meta: {
@@ -121,110 +51,6 @@ const router = new VueRouter({
         breadcrumb: [
           {
             text: 'Uptime',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/:chain/uptime/my',
-      name: 'uptime',
-      component: () => import('@/views/UptimeMyValidators.vue'),
-      meta: {
-        pageTitle: 'Uptime',
-        breadcrumb: [
-          {
-            text: 'Uptime',
-            active: true,
-          },
-          {
-            text: 'My Validators',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/:chain/account/:address',
-      name: 'chain-account',
-      component: () => import('@/views/WalletAccountDetail.vue'),
-      meta: {
-        pageTitle: 'Accounts',
-        breadcrumb: [
-          {
-            text: 'Accounts',
-            active: true,
-          },
-          {
-            text: 'Detail',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/:chain/staking',
-      name: 'staking',
-      component: () => import('@/views/Staking.vue'),
-      meta: {
-        pageTitle: 'Staking',
-        breadcrumb: [
-          {
-            text: 'Staking',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/:chain/staking/:address',
-      name: 'staking-valiator',
-      component: () => import('@/views/StakingValidator.vue'),
-      meta: {
-        pageTitle: 'Staking Validator',
-        breadcrumb: [
-          {
-            text: 'Staking',
-            active: true,
-          },
-          {
-            text: 'Validator',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/:chain/gov',
-      name: 'governance',
-      component: () => import('@/views/Governance.vue'),
-      meta: {
-        pageTitle: 'Governance',
-        breadcrumb: [
-          {
-            text: 'Governance',
-            active: true,
-          },
-          {
-            text: 'Proposals',
-            active: true,
-          },
-        ],
-      },
-    },
-    {
-      path: '/:chain/gov/:proposalid',
-      name: 'proposal',
-      component: () => import('@/views/GovernanceProposalView.vue'),
-      meta: {
-        pageTitle: 'Governance',
-        breadcrumb: [
-          {
-            text: 'Governance',
-            active: true,
-          },
-          {
-            text: 'Proposal Detail',
             active: true,
           },
         ],
@@ -244,78 +70,24 @@ const router = new VueRouter({
         ],
       },
     },
+
+    // relayer modules
     {
-      path: '/:chain/blocks/:height',
-      name: 'block',
-      component: () => import('@/views/Block.vue'),
+      path: '/relayer',
+      name: 'relayer',
+      component: () => import('@/views/Relayer.vue'),
       meta: {
-        pageTitle: 'Block',
+        pageTitle: 'Relayer',
         breadcrumb: [
           {
-            text: 'Blocks',
-            active: true,
-          },
-          {
-            text: 'Block',
+            text: 'Relayer',
             active: true,
           },
         ],
       },
     },
-    {
-      path: '/:chain/tx/:hash',
-      name: 'transaction',
-      component: () => import('@/views/Transaction.vue'),
-      meta: {
-        pageTitle: 'Transaction',
-        breadcrumb: [
-          {
-            text: 'Transaction',
-            active: true,
-          },
-        ],
-      },
-    },
-    // custom modules for specified chains
-    // 1. cosmos
-    {
-      path: '/:chain/cosmos/pools',
-      name: 'gravity',
-      component: () => import('@/views/GravityPool.vue'),
-      meta: {
-        pageTitle: 'Gravity Pools',
-        breadcrumb: [
-          {
-            text: 'Gravity',
-            active: true,
-          },
-        ],
-      },
-    },
-    // 2. OSMOSIS
-    {
-      path: '/:chain/osmosis/pools',
-      name: 'osmosis-pool',
-      component: () => import('@/views/OsmosisPools.vue'),
-      meta: {
-        pageTitle: 'Pools',
-        breadcrumb: [
-          {
-            text: 'Pools',
-            active: true,
-          },
-        ],
-      },
-    },
+
     // common modules
-    {
-      path: '/user/login',
-      name: 'login',
-      component: () => import('@/views/Login.vue'),
-      meta: {
-        layout: 'full',
-      },
-    },
     {
       path: '/error/error-404',
       name: 'error-404',
