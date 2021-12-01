@@ -141,6 +141,25 @@ export default class ChainFetch {
     })
   }
 
+  async getBatchChainSingleValidator() {
+    const configs = this.getBatchConfig()
+    let vals = []
+
+    // get address from validators.json
+    let addresses
+    
+    Promise.all(configs.map(async (ele) => {
+      this.config = ele
+      let val = await this.getStakingValidator(addresses[ele.chain_name].address)
+
+      //checking val
+
+      vals.push(val)
+    }))
+
+    return vals
+  }
+
   async getValidatorListByHeight(height) {
     return this.get(`/validatorsets/${height}`).then(data => commonProcess(data))
   }

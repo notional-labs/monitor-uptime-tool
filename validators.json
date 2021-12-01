@@ -1,0 +1,8 @@
+{
+    "juno" : {
+        "address" : "abc"
+    },
+    "cosmos" : {
+        "address" : "def"
+    }
+}

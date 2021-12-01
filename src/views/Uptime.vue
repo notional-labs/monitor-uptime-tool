@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="container-md px-0">
     <b-card>
       <b-alert
@@ -112,7 +112,7 @@ export default {
     if (cached) {
       this.validators = cached
     } else {
-      this.$http.getValidatorList().then(res => {
+      this.$http.getBatchChainSingleValidator().then(res => {
         this.validators = res
       })
     }
