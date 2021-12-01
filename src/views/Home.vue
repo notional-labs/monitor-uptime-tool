@@ -14,25 +14,28 @@
           md="4"
           sm="6"
         >
-            <b-card
-              class="earnings-card text-left"
+            <b-button
+              class="btn text-left"
+              :to="{ name: 'uptime' }"
             >
               <b-row>
                 <b-col cols="8">
                   <b-card-title class="mb-1 text-uppercase"> Uptime </b-card-title>
                 </b-col>
               </b-row>
-            </b-card>
-
-            <b-card
-              class="earnings-card text-left"
+            </b-button>
+            <div>
+            </div>
+            <b-button
+              class="btn text-left"
+              :to="{ name: 'relayer' }"
             >
               <b-row>
                 <b-col cols="8">
                   <b-card-title class="mb-1 text-uppercase"> Relayer </b-card-title>
                 </b-col>
               </b-row>
-            </b-card>
+            </b-button>
         </b-col>
       </b-row>
     </div>
@@ -42,7 +45,7 @@
 <script>
 /* eslint-disable global-require */
 import {
-  BRow, BCol, BCard, BCardTitle, BNav, BNavItem,
+  BRow, BCol, BCardTitle, BNav, BNavItem, BButton,
 } from 'bootstrap-vue'
 import store from '@/store/index'
 import { timeIn, toDay } from '@/libs/data'
@@ -52,11 +55,11 @@ export default {
   components: {
     BRow,
     BCol,
-    BCard,
     BCardTitle,
     BNav,
     BNavItem,
     DarkToggler,
+    BButton,
   },
   computed: {
     imgUrl() {
