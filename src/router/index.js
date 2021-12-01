@@ -43,7 +43,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/uptime',
+      path: '/uptime',
       name: 'uptime',
       component: () => import('@/views/Uptime.vue'),
       meta: {

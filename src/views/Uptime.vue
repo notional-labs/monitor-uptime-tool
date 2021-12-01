@@ -13,16 +13,6 @@
         no-body
         class="mb-1"
       >
-        <b-button
-          to="./uptime/my"
-          variant="primary"
-        >
-          Browse favourate only
-        </b-button>
-        <b-form-input
-          v-model="query"
-          placeholder="Keywords to filter validators"
-        />
       </b-card>
       <b-row>
         <b-col
@@ -32,13 +22,7 @@
           md="4"
           class="text-truncate"
         >
-          <b-form-checkbox
-            v-model="pinned"
-            :value="`${chain}#${x.address}`"
-            class="custom-control-warning"
-            @change="pinValidator(`${chain}#${x.address}`)"
-          ><span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{ x.validator.moniker }}</span>
-          </b-form-checkbox>
+          <span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{ x.validator.moniker }}</span>
           <div class="d-flex justify-content-between align-self-stretch flex-wrap">
             <div
               v-for="(b,i) in blocks"
@@ -62,7 +46,7 @@
 
 <script>
 import {
-  BRow, BCol, VBTooltip, BFormInput, BCard, BAlert, BFormCheckbox, BButton,
+  BRow, BCol, VBTooltip, BCard, BAlert,
 } from 'bootstrap-vue'
 
 import {
@@ -73,11 +57,8 @@ export default {
   components: {
     BRow,
     BCol,
-    BFormInput,
     BCard,
     BAlert,
-    BButton,
-    BFormCheckbox,
   },
   directives: {
     'b-tooltip': VBTooltip,
