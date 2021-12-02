@@ -28,7 +28,7 @@ export default class ChainFetch {
     this.osmosis = new OsmosAPI()
   }
 
-  //============ CHAIN CONFIG ============
+//============ CHAIN CONFIG ============
   getSelectedConfig() {
     let chain = store.state.chains.selected
     const lschains = localStorage.getItem('chains')
@@ -42,7 +42,7 @@ export default class ChainFetch {
     return this.config
   }
 
-  //============ END CHAIN CONFIG ============
+//============ END CHAIN CONFIG ============
 
   isModuleLoaded(name) {
     if (this.config.unload_module) {
@@ -136,7 +136,7 @@ export default class ChainFetch {
     })
   }
 
-  //============ Validator List ============
+//============ Validator List ============
 
   async getValidatorList() {
     return this.get('/staking/validators').then(data => {
@@ -152,8 +152,7 @@ export default class ChainFetch {
     // get validator from local storage
     const addresses = JSON.parse(localStorage.getItem('addresses'))
 
-    let vals = {}
-    
+    let vals = {}  
     Promise.all(Object.keys(lschains).map(async (key) => {
       let config = lschains[key]
       if (!config.sdk_version) {
@@ -161,7 +160,7 @@ export default class ChainFetch {
       }
 
       const val = await this.get(`/staking/validators/${addresses[key]}`, config).then(data => new Validator().init(commonProcess(data)))
-      //localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
+//    localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
       vals[config.chain_name] = val
     }));
 
@@ -176,7 +175,7 @@ export default class ChainFetch {
     return this.get(`/staking/validators/${address}`).then(data => new Validator().init(commonProcess(data)))
   }
 
-  //============ End Validator List ============
+//============ End Validator List ============
 
   async getSlashingParameters() {
     if (this.isModuleLoaded('slashing')) {
