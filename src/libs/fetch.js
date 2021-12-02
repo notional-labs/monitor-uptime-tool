@@ -151,6 +151,8 @@ export default class ChainFetch {
     const lschains = JSON.parse(localStorage.getItem('chains'))
     // get validator from local storage
     const addresses = JSON.parse(localStorage.getItem('addresses'))
+
+    let vals = {}
     
     Promise.all(Object.keys(lschains).map(async (key) => {
       let config = lschains[key]
@@ -159,8 +161,11 @@ export default class ChainFetch {
       }
 
       const val = await this.get(`/staking/validators/${addresses[key]}`, config).then(data => new Validator().init(commonProcess(data)))
-      localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
+      //localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
+      vals[config.chain_name] = val
     }));
+
+    return vals
   }
 
   async getValidatorListByHeight(height) {
