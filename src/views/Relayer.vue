@@ -66,8 +66,9 @@ import {
 } from 'bootstrap-vue'
 
 import {
-  consensusPubkeyToHexAddress, getCachedValidators, timeIn, toDay,
+  consensusPubkeyToHexAddress, timeIn, toDay,
 } from '@/libs/data'
+/* eslint-disable */
 
 export default {
   components: {
@@ -89,7 +90,7 @@ export default {
       pinned,
       chain,
       query: '',
-      validators: [],
+      chain_info: [],
       missing: {},
       blocks: Array.from('0'.repeat(50)).map(x => ({ sigs: {}, height: Number(x) })),
       syncing: false,
@@ -98,7 +99,7 @@ export default {
   },
   computed: {
     uptime() {
-      const vals = this.query ? this.validators.filter(x => String(x.description.moniker).indexOf(this.query) > -1) : this.validators
+      const vals = this.query ? this.chain_info.filter(x => String(x.description.moniker).indexOf(this.query) > -1) : this.chain_info
       vals.sort((a, b) => b.delegator_shares - a.delegator_shares)
       return vals.map(x => ({
         validator: x.description,
@@ -107,15 +108,7 @@ export default {
     },
   },
   created() {
-    const cached = JSON.parse(getCachedValidators(this.$route.params.chain))
-
-    if (cached) {
-      this.validators = cached
-    } else {
-      this.$http.getValidatorList().then(res => {
-        this.validators = res
-      })
-    }
+    this.chain_info = JSON.parse(localStorage.getItem('chains'))
     this.initBlocks()
   },
   beforeDestroy() {
@@ -160,8 +153,8 @@ export default {
     },
     initColor() {
       const sigs = {}
-      this.validators.forEach(x => {
-        sigs[consensusPubkeyToHexAddress(x.consensus_pubkey)] = 'bg-danger'
+      this.chain_info.forEach(x => {
+        sigs[x.chain_name] = 'bg-success'
       })
       return sigs
     },
@@ -191,6 +184,89 @@ export default {
           this.blocks.push({ sigs, height: res.block.last_commit.height })
         }
       })
+    },
+    fetch_status_txs_ibc(height, resolve) {
+      const lschains = JSON.parse(localStorage.getItem('chains'))
+      const addresses = JSON.parse(localStorage.getItem('addresses'))
+
+      const block = this.blocks.find(b => b.height === height)
+      if (block) {
+        for (const config in lschains){
+          const height = this.$http.getLatestBlock(config).then(res => {
+            return res.block.last_commit.height
+          })
+          
+          this.$http.getTxsByHeight(height, config).then(res => {
+            const sigs = this.initColor()
+
+            if (res.total_count == 0){  
+              sigs[config.chain_name] = 'bg-white'
+              this.blocks[49] = {sigs, height: res.block.last_commit.height}
+              return
+            }
+            const transacsion_ls = res.txs
+            const transaction_res = res.tx_responses
+
+            for (let i = 0; i < res.total_count; i++ ){
+              if (!transacsion_ls[i].body.messages[0].includes('MsgUpdateClient') 
+              && !transacsion_ls[i].body.messages[0].includes('MsgAcknowledgement') 
+              && !transacsion_ls[i].body.messages[0].includes('MsgRecvPacket')){
+                continue
+              }
+              //msg Fail 
+              if (transaction_res[i].code !== 0){
+                sigs[addresses[config.chain_name]] = "bg-danger"
+              }
+            }
+
+            const block = this.blocks.find(b => b[1] === height)
+            if (typeof block === 'undefined' && res.total_count !== 0 ) {
+              // this.$set(block, 0, typeof sigs !== 'undefined')
+              if (this.blocks.length >= 50) this.blocks.shift()
+              this.blocks.push({ sigs, height: height })
+            }
+        })
+      }}
+    },
+    fetch_latest_txs_ibc() {
+      const lschains = JSON.parse(localStorage.getItem('chains'))
+      const addresses = JSON.parse(localStorage.getItem('addresses'))
+
+      for (const config in lschains){
+        const height = this.$http.getLatestBlock(config).then(res => {
+          return res.block.last_commit.height
+        })
+        
+        this.$http.getTxsByHeight(height, config).then(res => {
+          const sigs = this.initColor()
+
+          if (res.total_count == 0){  
+            sigs[config.chain_name] = 'bg-white'
+            this.blocks[49] = {sigs, height: res.block.last_commit.height}
+            return
+          }
+          const transacsion_ls = res.txs
+          const transaction_res = res.tx_responses
+
+          for (let i = 0; i < res.total_count; i++ ){
+            if (!transacsion_ls[i].body.messages[0].includes('MsgUpdateClient') 
+            && !transacsion_ls[i].body.messages[0].includes('MsgAcknowledgement') 
+            && !transacsion_ls[i].body.messages[0].includes('MsgRecvPacket')){
+              continue
+            }
+            //msg Fail
+            if (transaction_res[i].code !== 0){
+              sigs[addresses[config.chain_name]] = "bg-success"
+            }
+          }
+          const block = this.blocks.find(b => b[1] === height)
+          if (typeof block === 'undefined' && res.total_count !== 0 ) {
+            // this.$set(block, 0, typeof sigs !== 'undefined')
+            if (this.blocks.length >= 50) this.blocks.shift()
+            this.blocks.push({ sigs, height: height })
+          }
+        })
+      }
     },
   },
 }
