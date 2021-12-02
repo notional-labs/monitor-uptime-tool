@@ -10,31 +10,6 @@
 
     <div>
       <b-row class="match-height">
-<<<<<<< HEAD
-        
-      <button class="success"
-            :class="type"
-            @click="goValidator()"
-            >
-              <slot>Validators</slot>\
-      </button>
-
-      <button class="success"
-            :class="type"
-            @click="goRelayer()"
-            >
-              <slot>Relayers</slot>\
-      </button>
-        <!-- no result found -->
-        <b-col
-          v-show="!chains"
-          cols="12"
-          class="text-center"
-        >
-          <h4 class="mt-4">
-            No blockchain found!!
-          </h4>
-=======
         <b-col
           md="4"
           sm="6"
@@ -61,7 +36,6 @@
                 </b-col>
               </b-row>
             </b-button>
->>>>>>> 593c84feb54768b6e29fda81a2567a8a519d3893
         </b-col>
       </b-row>
     </div>

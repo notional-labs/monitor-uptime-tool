@@ -146,23 +146,6 @@ export default class ChainFetch {
     })
   }
 
-<<<<<<< HEAD
-  async getBatchChainSingleValidator() {
-    const configs = this.getBatchConfig()
-    let vals = []
-
-    // get address from validators.json
-    let addresses
-    
-    Promise.all(configs.map(async (ele) => {
-      this.config = ele
-      let val = await this.getStakingValidator(addresses[ele.chain_name].address)
-
-      //checking val
-
-      vals.push(val)
-    }))
-=======
   async getBatchValidator() {
     // get chain from local storage
     const lschains = JSON.parse(localStorage.getItem('chains'))
@@ -180,8 +163,6 @@ export default class ChainFetch {
 //    localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
       vals[config.chain_name] = val
     }));
->>>>>>> 57e403f745d9581cee24294b5596d0615f8219ba
-
     return vals
   }
 
