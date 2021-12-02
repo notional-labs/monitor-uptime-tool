@@ -88,12 +88,14 @@ export default {
       }))
     },
   },
+  
   created() {
     this.$http.getValidatorList().then(res => {
       this.chains = res
     })
     this.initBlocks()
   },
+
   beforeDestroy() {
     this.blocks = [] // clear running tasks if it is not finish
     this.syncing = false
