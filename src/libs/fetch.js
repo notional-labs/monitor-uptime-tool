@@ -28,6 +28,7 @@ export default class ChainFetch {
     this.osmosis = new OsmosAPI()
   }
 
+  //============ CHAIN CONFIG ============
   getSelectedConfig() {
     let chain = store.state.chains.selected
     const lschains = localStorage.getItem('chains')
@@ -40,6 +41,8 @@ export default class ChainFetch {
     this.config = chain
     return this.config
   }
+
+  //============ END CHAIN CONFIG ============
 
   isModuleLoaded(name) {
     if (this.config.unload_module) {
@@ -133,12 +136,36 @@ export default class ChainFetch {
     })
   }
 
+  //============ Validator List ============
+
   async getValidatorList() {
     return this.get('/staking/validators').then(data => {
       const vals = commonProcess(data).map(i => new Validator().init(i))
       localStorage.setItem(`validators-${this.config.chain_name}`, JSON.stringify(vals))
       return vals
     })
+  }
+
+  async getBatchValidator() {
+    // get chain from local storage
+    const lschains = JSON.parse(localStorage.getItem('chains'))
+    // get validator from local storage
+    const addresses = JSON.parse(localStorage.getItem('addresses'))
+
+    let vals = {}
+    
+    Promise.all(Object.keys(lschains).map(async (key) => {
+      let config = lschains[key]
+      if (!config.sdk_version) {
+        config.sdk_version = '0.33'
+      }
+
+      const val = await this.get(`/staking/validators/${addresses[key]}`, config).then(data => new Validator().init(commonProcess(data)))
+      //localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
+      vals[config.chain_name] = val
+    }));
+
+    return vals
   }
 
   async getValidatorListByHeight(height) {
@@ -148,6 +175,8 @@ export default class ChainFetch {
   async getStakingValidator(address) {
     return this.get(`/staking/validators/${address}`).then(data => new Validator().init(commonProcess(data)))
   }
+
+  //============ End Validator List ============
 
   async getSlashingParameters() {
     if (this.isModuleLoaded('slashing')) {
