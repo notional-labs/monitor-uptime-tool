@@ -50,7 +50,7 @@ import {
 } from 'bootstrap-vue'
 
 import {
-  consensusPubkeyToHexAddress, getCachedValidators, timeIn, toDay,
+  consensusPubkeyToHexAddress, timeIn, toDay,
 } from '@/libs/data'
 
 export default {
@@ -70,7 +70,7 @@ export default {
       pinned,
       chain,
       query: '',
-      validators: [],
+      chains: [],
       missing: {},
       blocks: Array.from('0'.repeat(50)).map(x => ({ sigs: {}, height: Number(x) })),
       syncing: false,
@@ -79,7 +79,8 @@ export default {
   },
   computed: {
     uptime() {
-      const vals = this.query ? this.validators.filter(x => String(x.description.moniker).indexOf(this.query) > -1) : this.validators
+      const vals = this.chains
+      console.log(vals)
       vals.sort((a, b) => b.delegator_shares - a.delegator_shares)
       return vals.map(x => ({
         validator: x.description,
@@ -88,6 +89,7 @@ export default {
     },
   },
   created() {
+<<<<<<< HEAD
     const cached = JSON.parse(getCachedValidators(this.$route.params.chain))
 
     if (cached) {
@@ -97,6 +99,11 @@ export default {
         this.validators = res
       })
     }
+=======
+    this.$http.getValidatorList().then(res => {
+      this.chains = res
+    })
+>>>>>>> 57e403f745d9581cee24294b5596d0615f8219ba
     this.initBlocks()
   },
   beforeDestroy() {
@@ -105,9 +112,6 @@ export default {
     clearInterval(this.timer)
   },
   methods: {
-    pinValidator() {
-      localStorage.setItem('pinned', this.pinned)
-    },
     initBlocks() {
       this.$http.getLatestBlock().then(d => {
         const { height } = d.block.last_commit
@@ -141,7 +145,7 @@ export default {
     },
     initColor() {
       const sigs = {}
-      this.validators.forEach(x => {
+      this.chains.forEach(x => {
         sigs[consensusPubkeyToHexAddress(x.consensus_pubkey)] = 'bg-danger'
       })
       return sigs

@@ -1,0 +1,11 @@
+{
+    "akash": {
+        "valAddr" : "",
+        "relayerAddr" : ""
+    },
+
+    "osmosis" : {
+        "valAddr" : "",
+        "relayerAddr" : ""
+    }
+}
