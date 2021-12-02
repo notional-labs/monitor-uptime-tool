@@ -88,6 +88,7 @@ export default {
       }))
     },
   },
+  
   created() {
     const cached = JSON.parse(getCachedValidators(this.$route.params.chain))
 
@@ -100,6 +101,7 @@ export default {
     }
     this.initBlocks()
   },
+
   beforeDestroy() {
     this.blocks = [] // clear running tasks if it is not finish
     this.syncing = false

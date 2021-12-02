@@ -61,81 +61,20 @@
     <b-navbar-nav class="nav align-items-center ml-auto">
       <dark-Toggler class="d-none d-lg-block" />
       <search-bar />
-      <locale />
-      <b-button
-        v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-        variant="primary"
-        class="btn-icon"
-        :to="{ name: 'accounts' }"
-      >
-        <feather-icon icon="KeyIcon" />
-        <span class="align-middle ml-25">{{ walletName }}</span>
-      </b-button>
-      <!-- <b-dropdown
-        class="ml-1"
-        variant="link"
-        no-caret
-        toggle-class="p-0"
-        right
-      >
-
-        <template #button-content>
-          <b-button
-            v-ripple.400="'rgba(255, 255, 255, 0.15)'"
-            variant="primary"
-            class="btn-icon"
-          >
-            <feather-icon icon="UserIcon" />
-          </b-button>
-        </template>
-
-        <b-dropdown-item :to="{ name: 'portfolio' }">
-          <feather-icon
-            icon="PieChartIcon"
-            size="16"
-          />
-          <span class="align-middle ml-50">Portofolio</span>
-        </b-dropdown-item>
-
-        <b-dropdown-item :to="{ name: 'accounts' }">
-          <feather-icon
-            icon="KeyIcon"
-            size="16"
-          />
-          <span class="align-middle ml-50">Accounts</span>
-        </b-dropdown-item>
-
-        <b-dropdown-item :to="{ name: 'addresses' }">
-          <feather-icon
-            icon="BookOpenIcon"
-            size="16"
-          />
-          <span class="align-middle ml-50">Address Book</span>
-        </b-dropdown-item>
-
-        <b-dropdown-item :to="{ name: 'setting' }">
-          <feather-icon
-            icon="SettingsIcon"
-            size="16"
-          />
-          <span class="align-middle ml-50">Setting</span>
-        </b-dropdown-item>
-      </b-dropdown> -->
     </b-navbar-nav>
   </div>
 </template>
 
 <script>
 import {
-  BLink, BNavbarNav, BMedia, BMediaAside, BAvatar, BMediaBody, VBTooltip, BButton,
+  BLink, BNavbarNav, BMedia, BMediaAside, BAvatar, BMediaBody, VBTooltip,
 } from 'bootstrap-vue'
 import Ripple from 'vue-ripple-directive'
 import DarkToggler from '@core/layouts/components/app-navbar/components/DarkToggler.vue'
-import Locale from '@core/layouts/components/app-navbar/components/Locale.vue'
 import SearchBar from '@core/layouts/components/app-navbar/components/SearchBar.vue'
 // import CartDropdown from '@core/layouts/components/app-navbar/components/CartDropdown.vue'
 import store from '@/store'
-import { getLocalAccounts, timeIn, toDay } from '@/libs/data'
+import { timeIn, toDay } from '@/libs/data'
 // import UserDropdown from '@core/layouts/components/app-navbar/components/UserDropdown.vue'
 
 export default {
@@ -146,11 +85,9 @@ export default {
     BMedia,
     BMediaAside,
     BMediaBody,
-    BButton,
 
     // Navbar Components
     DarkToggler,
-    Locale,
     SearchBar,
     // CartDropdown,
     // UserDropdown,
@@ -172,10 +109,6 @@ export default {
     }
   },
   computed: {
-    walletName() {
-      const key = this.$store.state.chains.defaultWallet
-      return key || 'Wallet'
-    },
     selected_chain() {
       this.block()
       return store.state.chains.selected
@@ -183,12 +116,6 @@ export default {
     chainVariant() {
       return this.variant
     },
-  },
-  mounted() {
-    const accounts = Object.keys(getLocalAccounts())
-    if (!this.$store.state.chains.defaultWallet && accounts.length > 0) {
-      this.$store.commit('setDefaultWallet', accounts[0])
-    }
   },
   methods: {
     block() {
