@@ -37,7 +37,7 @@
             :value="`${chain}#${x.address}`"
             class="custom-control-warning"
             @change="pinValidator(`${chain}#${x.address}`)"
-          ><span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{ x.validator.moniker }}</span>
+          ><span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{x.address }}</span>
           </b-form-checkbox>
           <div class="d-flex justify-content-between align-self-stretch flex-wrap">
             <div
@@ -65,9 +65,7 @@ import {
   BRow, BCol, VBTooltip, BFormInput, BCard, BAlert, BFormCheckbox, BButton,
 } from 'bootstrap-vue'
 
-import {
-  consensusPubkeyToHexAddress, timeIn, toDay,
-} from '@/libs/data'
+import { timeIn, toDay } from '@/libs/data'
 /* eslint-disable */
 
 export default {
@@ -99,11 +97,10 @@ export default {
   },
   computed: {
     uptime() {
-      const vals = this.query ? this.chain_info.filter(x => String(x.description.moniker).indexOf(this.query) > -1) : this.chain_info
-      vals.sort((a, b) => b.delegator_shares - a.delegator_shares)
-      return vals.map(x => ({
-        validator: x.description,
-        address: consensusPubkeyToHexAddress(x.consensus_pubkey),
+      const vals = this.chain_info
+      return Object.entries(vals).map(x => ({
+        validator: x.chain_name,
+        address: x.chain_name,
       }))
     },
   },
@@ -142,9 +139,9 @@ export default {
         }
 
         const sigs = this.initColor()
-        d.block.last_commit.signatures.forEach(x => {
-          if (x.validator_address) sigs[x.validator_address] = 'bg-success'
-        })
+        // d.block.last_commit.signatures.forEach(x => {
+        //   if (x.validator_address) sigs[x.validator_address] = 'bg-success'
+        // })
         blocks.push({ sigs, height })
         this.blocks = blocks
 
@@ -153,7 +150,7 @@ export default {
     },
     initColor() {
       const sigs = {}
-      this.chain_info.forEach(x => {
+      Object.entries(this.chain_info).forEach(x => {
         sigs[x.chain_name] = 'bg-success'
       })
       return sigs
