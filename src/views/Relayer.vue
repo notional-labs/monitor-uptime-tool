@@ -34,10 +34,11 @@
         >
           <b-form-checkbox
             v-model="pinned"
-            :value="`${chain}#${x.address}`"
+            :value="`${chain}#${x.chain_name}`"
             class="custom-control-warning"
-            @change="pinValidator(`${chain}#${x.address}`)"
-          ><span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{x.address }}</span>
+            @change="pinValidator(`${chain}#${x.chain_name}`)"
+          ><span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{ x.chain_name }}</span>
+            <h5>No tx abcxyz blala </h5>
           </b-form-checkbox>
           <div class="d-flex justify-content-between align-self-stretch flex-wrap">
             <div
@@ -48,7 +49,7 @@
               <div
                 v-b-tooltip.hover.v-second
                 :title="b.height"
-                :class="b.sigs && b.sigs[x.address] ? b.sigs[x.address] : 'bg-light-success'"
+                :class="b.sigs && b.sigs[x.chain_name] ? b.sigs[x.chain_name] : 'bg-light-danger'"
                 class="m-auto"
               >&nbsp;</div>
             </router-link>
@@ -97,11 +98,18 @@ export default {
   },
   computed: {
     uptime() {
+      const addresses = JSON.parse(localStorage.getItem('addresses'))
+      console.log("vuong")
+      console.log(addresses)
       const vals = this.chain_info
-      return Object.entries(vals).map(x => ({
-        validator: x.chain_name,
-        address: x.chain_name,
+      console.log(vals)
+
+      const ans = Object.entries(vals).map(x => ({
+        chain_name: x[0],
+        address: "fucking that shit",
       }))
+      console.log(ans)
+      return ans
     },
   },
   created() {
@@ -253,17 +261,22 @@ export default {
             }
             //msg Fail
             if (transaction_res[i].code !== 0){
-              sigs[addresses[config.chain_name]] = "bg-success"
+              sigs[addresses[config.chain_name]] = {
+                signal :"bg-success",
+                height : height
+              }
             }
-          }
-          const block = this.blocks.find(b => b[1] === height)
-          if (typeof block === 'undefined' && res.total_count !== 0 ) {
-            // this.$set(block, 0, typeof sigs !== 'undefined')
-            if (this.blocks.length >= 50) this.blocks.shift()
-            this.blocks.push({ sigs, height: height })
           }
         })
       }
+      const block = this.blocks.find(b => b[1] === height)
+      if (typeof block === 'undefined' && res.total_count !== 0 ) {
+        // this.$set(block, 0, typeof sigs !== 'undefined')
+        if (this.blocks.length >= 50) this.blocks.shift()
+        this.blocks.push({ sigs })
+      }
+        
+    
     },
   },
 }
