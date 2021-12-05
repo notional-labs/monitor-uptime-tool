@@ -9,6 +9,7 @@ import {
   Validator, StakingParameters, Block, ValidatorDistribution, StakingDelegation, WrapStdTx, getUserCurrency,
 } from './data'
 import OsmosAPI from './osmos'
+import {fstat, readFileSync} from "fs"
 
 function commonProcess(res) {
   if (res && Object.keys(res).includes('result')) {
@@ -139,6 +140,12 @@ export default class ChainFetch {
       localStorage.setItem(`validators-${this.config.chain_name}`, JSON.stringify(vals))
       return vals
     })
+  }
+
+  async getChainList() {
+    let raw = fs.readFileSync('src/chains/chains.json')
+    let vals = JSON.parse(raw)
+    return vals
   }
 
   async getValidatorListByHeight(height) {

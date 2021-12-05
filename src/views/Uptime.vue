@@ -1,14 +1,6 @@
 <template>
   <div class="container-md px-0">
     <b-card>
-      <b-alert
-        variant="danger"
-        :show="syncing"
-      >
-        <div class="alert-body">
-          <span>No new block is produced since  <strong>{{ latestTime }}</strong> </span>
-        </div>
-      </b-alert>
       <b-card
         no-body
         class="mb-1"
@@ -46,11 +38,11 @@
 
 <script>
 import {
-  BRow, BCol, VBTooltip, BCard, BAlert,
+  BRow, BCol, VBTooltip, BCard,
 } from 'bootstrap-vue'
 
 import {
-  consensusPubkeyToHexAddress, getCachedValidators, timeIn, toDay,
+  consensusPubkeyToHexAddress, timeIn, toDay,
 } from '@/libs/data'
 
 export default {
@@ -58,7 +50,6 @@ export default {
     BRow,
     BCol,
     BCard,
-    BAlert,
   },
   directives: {
     'b-tooltip': VBTooltip,
@@ -68,9 +59,7 @@ export default {
     const pinned = localStorage.getItem('pinned') ? localStorage.getItem('pinned').split(',') : ''
     return {
       pinned,
-      chain,
-      query: '',
-      validators: [],
+      chains: [],
       missing: {},
       blocks: Array.from('0'.repeat(50)).map(x => ({ sigs: {}, height: Number(x) })),
       syncing: false,
@@ -79,7 +68,7 @@ export default {
   },
   computed: {
     uptime() {
-      const vals = this.query ? this.validators.filter(x => String(x.description.moniker).indexOf(this.query) > -1) : this.validators
+      const vals = this.chains // vals now contains chains data
       vals.sort((a, b) => b.delegator_shares - a.delegator_shares)
       return vals.map(x => ({
         validator: x.description,
@@ -88,15 +77,9 @@ export default {
     },
   },
   created() {
-    const cached = JSON.parse(getCachedValidators(this.$route.params.chain))
-
-    if (cached) {
-      this.validators = cached
-    } else {
-      this.$http.getValidatorList().then(res => {
-        this.validators = res
-      })
-    }
+    this.$http.getChainList().then(res => { // change to getChainList()
+        this.chains = res
+    })
     this.initBlocks()
   },
   beforeDestroy() {
@@ -105,9 +88,6 @@ export default {
     clearInterval(this.timer)
   },
   methods: {
-    pinValidator() {
-      localStorage.setItem('pinned', this.pinned)
-    },
     initBlocks() {
       this.$http.getLatestBlock().then(d => {
         const { height } = d.block.last_commit
@@ -141,7 +121,7 @@ export default {
     },
     initColor() {
       const sigs = {}
-      this.validators.forEach(x => {
+      this.chains.forEach(x => {
         sigs[consensusPubkeyToHexAddress(x.consensus_pubkey)] = 'bg-danger'
       })
       return sigs
