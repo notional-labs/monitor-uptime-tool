@@ -9,7 +9,6 @@ import {
   Proposal, ProposalTally, Proposer, StakingPool, Votes, Deposit,
   Validator, StakingParameters, Block, ValidatorDistribution, StakingDelegation, WrapStdTx, getUserCurrency,
 } from './data'
-import OsmosAPI from './osmos'
 
 function commonProcess(res) {
   if (res && Object.keys(res).includes('result')) {
@@ -117,10 +116,6 @@ export default class ChainFetch {
       return this.get('/supply/total').then(data => commonProcess(data))
     }
     return this.get('/cosmos/bank/v1beta1/supply').then(data => data.supply)
-  }
-
-  async getStakingPool() {
-    return this.get('/staking/pool').then(data => new StakingPool().init(commonProcess(data)))
   }
 
   async getMintingInflation() {

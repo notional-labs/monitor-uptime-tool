@@ -2,6 +2,9 @@
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
+
+// import messages from '@/lang'
+
 import ChainAPI from '@/libs/fetch'
 import router from './router'
 import store from './store'

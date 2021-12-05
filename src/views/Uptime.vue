@@ -2,14 +2,6 @@
 <template>
   <div class="container-md px-0">
     <b-card>
-      <b-alert
-        variant="danger"
-        :show="syncing"
-      >
-        <div class="alert-body">
-          <span>No new block is produced since  <strong>{{ latestTime }}</strong> </span>
-        </div>
-      </b-alert>
       <b-card
         no-body
         class="mb-1"
@@ -39,7 +31,7 @@
 <script>
 /* eslint-disable */
 import {
-  BRow, BCol, VBTooltip, BCard, BAlert,
+  BRow, BCol, VBTooltip, BCard,
 } from 'bootstrap-vue'
 
 import UptimeBlock from './UptimeBlock.vue'
