@@ -79,17 +79,11 @@ export default {
       }))
     },
   },
-  
-  created() {
-    const cached = JSON.parse(getCachedValidators(this.$route.params.chain))
 
-    if (cached) {
-      this.validators = cached
-    } else {
-      this.$http.getBatchValidator().then(res => {
-        this.validators = res
-      })
-    }
+  created() {
+    this.$http.getBatchValidator().then(res => {
+      this.validators = res
+    })
     this.initBlocks()
   },
 

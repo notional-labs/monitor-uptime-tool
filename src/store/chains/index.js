@@ -1,11 +1,5 @@
-import { isTestnet } from '@/libs/data/data'
-
 let chains = {}
-
-let configs = require.context('../../chains/mainnet', false, /\.json$/)
-if (isTestnet()) {
-  configs = require.context('../../chains/testnet', false, /\.json$/)
-}
+const configs = require.context('../../chains/mainnet', false, /\.json$/)
 
 const update = {}
 configs.keys().forEach(k => {

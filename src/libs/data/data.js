@@ -1,13 +1,9 @@
 import {
   Bech32, fromBase64, fromHex, toHex,
 } from '@cosmjs/encoding'
-import { sha256, stringToPath } from '@cosmjs/crypto'
-// ledger
-import TransportWebBLE from '@ledgerhq/hw-transport-web-ble'
-import TransportWebUSB from '@ledgerhq/hw-transport-webusb'
+import { sha256 } from '@cosmjs/crypto'
+
 import { SigningStargateClient } from '@cosmjs/stargate'
-import CosmosApp from 'ledger-cosmos-js'
-import { LedgerSigner } from '@cosmjs/ledger-amino'
 
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -46,11 +42,6 @@ export function setLocalTxHistory(newTx) {
     return localStorage.setItem('txHistory', JSON.stringify(txs))
   }
   return localStorage.setItem('txHistory', JSON.stringify([newTx]))
-}
-
-export async function connectLedger(transport = 'usb') {
-  const trans = await transport === 'usb' ? TransportWebUSB.create() : TransportWebBLE.create()
-  return new CosmosApp(trans)
 }
 
 export function operatorAddressToAccount(operAddress) {
@@ -128,31 +119,9 @@ function toSignAddress(addr) {
   return addressEnCode('cosmos', data)
 }
 
-function getHdPath(address) {
-  let hdPath = "m/44'/118/0'/0/0"
-  Object.values(getLocalAccounts()).forEach(item => {
-    const curr = item.address.find(i => i.addr === address)
-    if (curr && curr.hdpath) {
-      hdPath = curr.hdpath
-    }
-  })
-  // return [44, 118, 0, 0, 0]
-  //  m/0'/1/2'/2/1000000000
-  return stringToPath(hdPath)
-}
-
 export async function sign(device, chainId, signerAddress, messages, fee, memo, signerData) {
-  let transport
   let signer
   switch (device) {
-    case 'ledgerBle':
-      transport = await TransportWebBLE.create()
-      signer = new LedgerSigner(transport, { hdPaths: [getHdPath(signerAddress)] })
-      break
-    case 'ledgerUSB':
-      transport = await TransportWebUSB.create()
-      signer = new LedgerSigner(transport, { hdPaths: [getHdPath(signerAddress)] })
-      break
     case 'keplr':
     default:
       if (!window.getOfflineSigner || !window.keplr) {
@@ -167,12 +136,6 @@ export async function sign(device, chainId, signerAddress, messages, fee, memo, 
   const client = await SigningStargateClient.offline(signer)
   return client.signAmino(device === 'keplr' ? signerAddress : toSignAddress(signerAddress), messages, fee, memo, signerData)
   // return signDirect(signer, signerAddress, messages, fee, memo, signerData)
-}
-
-export async function getLedgerAddress(transport = 'blu', hdPath = "m/44'/118/0'/0/0") {
-  const trans = transport === 'usb' ? await TransportWebUSB.create() : await TransportWebBLE.create()
-  const signer = new LedgerSigner(trans, { hdPaths: [stringToPath(hdPath)] })
-  return signer.getAccounts()
 }
 
 export function toDuration(value) {
@@ -319,11 +282,6 @@ export function formatTokenAmount(tokenAmount, fraction = 2, denom = 'uatom') {
     return parseFloat(amount.toFixed(fraction))
   }
   return parseFloat(amount)
-}
-
-export function isTestnet() {
-  return (window.location.hostname.startsWith('testnet')
-   || window.location.search.indexOf('testnet') > -1)
 }
 
 export function formatToken(token, IBCDenom = {}, decimals = 2) {
