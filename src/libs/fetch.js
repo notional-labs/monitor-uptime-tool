@@ -1,3 +1,4 @@
+/* eslint-disable */
 import fetch from 'node-fetch'
 // import axios from 'axios'
 import store from '@/store'
@@ -28,7 +29,7 @@ export default class ChainFetch {
     this.osmosis = new OsmosAPI()
   }
 
-//============ CHAIN CONFIG ============
+  //============ CHAIN CONFIG ============
   getSelectedConfig() {
     let chain = store.state.chains.selected
     const lschains = localStorage.getItem('chains')
@@ -42,7 +43,7 @@ export default class ChainFetch {
     return this.config
   }
 
-//============ END CHAIN CONFIG ============
+  //============ END CHAIN CONFIG ============
 
   isModuleLoaded(name) {
     if (this.config.unload_module) {
@@ -136,7 +137,7 @@ export default class ChainFetch {
     })
   }
 
-//============ Validator List ============
+  //============ Validator List ============
 
   async getValidatorList() {
     return this.get('/staking/validators').then(data => {
@@ -151,19 +152,24 @@ export default class ChainFetch {
     const lschains = JSON.parse(localStorage.getItem('chains'))
     // get validator from local storage
     const addresses = JSON.parse(localStorage.getItem('addresses'))
-
-    let vals = {}  
+    console.log(lschains)
+    let chains = []
     Promise.all(Object.keys(lschains).map(async (key) => {
       let config = lschains[key]
+      let chain = {}
       if (!config.sdk_version) {
         config.sdk_version = '0.33'
       }
 
-      const val = await this.get(`/staking/validators/${addresses[key]}`, config).then(data => new Validator().init(commonProcess(data)))
-//    localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
-      vals[config.chain_name] = val
+      if (addresses[key]) {
+        const val = await this.get(`/staking/validators/${addresses[key].valAddr}`, config).then(data => new Validator().init(commonProcess(data)))
+        //    localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
+        chain['validator'] = val
+        chain['config'] = config
+        chains.push(chain)
+      }
     }));
-    return vals
+    return chains
   }
 
   async getValidatorListByHeight(height) {
@@ -174,7 +180,7 @@ export default class ChainFetch {
     return this.get(`/staking/validators/${address}`).then(data => new Validator().init(commonProcess(data)))
   }
 
-//============ End Validator List ============
+  //============ End Validator List ============
 
   async getSlashingParameters() {
     if (this.isModuleLoaded('slashing')) {

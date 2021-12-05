@@ -1,13 +1,8 @@
+/* eslint-disable */
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
-<<<<<<< HEAD
-// import messages from '@/lang'
-=======
-
->>>>>>> 9ea13a9114a3487da01f2b20c812afefef772e20
 import ChainAPI from '@/libs/fetch'
-
 import router from './router'
 import store from './store'
 import App from './App.vue'

@@ -1,11 +1,10 @@
 {
-    "akash": {
-        "valAddr" : "akash1083svrca4t350mphfv9x45wq9asrs60c956m2m",
+    "osmosis" : {
+        "valAddr" : "osmovaloper1083svrca4t350mphfv9x45wq9asrs60c6rv0j5",
         "relayerAddr" : ""
     },
-
-    "osmosis" : {
-        "valAddr" : "osmo1083svrca4t350mphfv9x45wq9asrs60cq5yv9n",
+    "starname" : {
+        "valAddr" : "starvaloper1pdqlmncych8uzsfdnsptv7s0wpazc0rgv7zc6h",
         "relayerAddr" : ""
     }
 }
