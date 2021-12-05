@@ -45,7 +45,6 @@ export default {
     BRow,
     BCol,
     BCard,
-    BAlert,
     UptimeBlock
   },
   directives: {

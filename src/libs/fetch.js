@@ -24,10 +24,6 @@ export function keybase(identity) {
 }
 
 export default class ChainFetch {
-  constructor() {
-    this.osmosis = new OsmosAPI()
-  }
-
   //============ CHAIN CONFIG ============
   getSelectedConfig() {
     let chain = store.state.chains.selected
@@ -147,7 +143,7 @@ export default class ChainFetch {
     const lschains = JSON.parse(localStorage.getItem('chains'))
     // get validator from local storage
     const addresses = JSON.parse(localStorage.getItem('addresses'))
-    console.log(lschains)
+
     let chains = []
     Promise.all(Object.keys(lschains).map(async (key) => {
       let config = lschains[key]
