@@ -19,47 +19,6 @@
   </div>
 
   <div>
-    <b-row class="match-height">
-        <b-col
-          md="4"
-          sm="6"
-        >
-          <router-link :to="data.chain_name">
-            <b-card
-              class="earnings-card text-left"
-            >
-              <b-row>
-                <b-col cols="8">
-                  <b-card-title class="mb-1 text-uppercase">
-                    ahihi <small class="font-small-2">saad</small>
-                  </b-card-title>
-                  <div class="font-small-2">
-                    Height
-                  </div>
-                  <h5 class="mb-1">
-                    ggggg
-                  </h5>
-                  <b-card-text class="text-muted font-small-2">
-                    <span> Updated on </span><span class="font-weight-bolder">jjjjj</span>
-                  </b-card-text>
-                </b-col>
-                <b-col
-                  cols="4"
-                >
-                  <b-avatar
-                    :src="data.logo"
-                    class="mt-1 badge-minimal"
-                    variant="light-primary"
-                    rounded
-                    size="82"
-                    badge
-                    :badge-variant="data.variant"
-                  /></b-col>
-              </b-row>
-            </b-card>
-          </router-link>
-        </b-col>
-      </b-row>
 
     <b-card-group>
       <b-card
@@ -68,10 +27,10 @@
       >
         <b-button
           class="btn text-left"
-          :to="{ name: 'relayer' }"
+          :to="{ name: 'uptime' }"
           variant="danger"
         >
-          <b-card-title class="mb-1 text-uppercase"> Relayer </b-card-title>
+          <b-card-title class="mb-1 text-uppercase"> Uptime </b-card-title>
         </b-button>
       </b-card>
 
