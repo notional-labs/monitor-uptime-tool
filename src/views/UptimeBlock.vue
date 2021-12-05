@@ -35,8 +35,10 @@ export default {
       type: Object,
       default: null,
     },
-    vals: Array,
-    default: () => []
+    vals: {
+      type: Array,
+      default: () => [],
+    }
   },
   data() {
     return {

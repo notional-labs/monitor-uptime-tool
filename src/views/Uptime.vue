@@ -26,7 +26,7 @@
           <span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{ x.config.chain_name }}</span>
 
           <UptimeBlock
-            :chain="x",
+            :chain="x"
             :vals="uptime"
           />
 

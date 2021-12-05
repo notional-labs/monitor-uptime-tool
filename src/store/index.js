@@ -17,7 +17,7 @@ export default new Vuex.Store({
     appConfig,
     verticalMenu,
     chains,
-    address
+    address,
   },
   mutations: chains.mutations,
   strict: process.env.DEV,

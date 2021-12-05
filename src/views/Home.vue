@@ -88,7 +88,7 @@ export default {
     },
     goRelayer() {
       this.$router.push('/relayer')
-    }
+    },
   },
 }
 </script>
