@@ -88,7 +88,7 @@ export default class ChainFetch {
   async getTxsByRecipient(recipient) {
     return this.get(`/txs?message.recipient=${recipient}`)
   }
-
+//TODO : use api to get tx res.
   async getTxsByHeight(height, config = null) {
     const conf = config || this.getSelectedConfig()
 
