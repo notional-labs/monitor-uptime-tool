@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
-import messages from '@/lang'
 
-import VueI18n from 'vue-i18n'
+// import messages from '@/lang'
 
 import ChainAPI from '@/libs/fetch'
 
@@ -20,14 +19,6 @@ import '@/libs/toastification'
 import '@/libs/clipboard'
 
 // Vue.use(VueGtag, { config: { id: 'UA-238887-1' } }, router)
-
-Vue.use(VueI18n)
-
-const i18n = new VueI18n({
-  locale: 'en',
-  messages,
-  fallbackLocale: 'en',
-})
 
 // BSV Plugin Registration
 Vue.use(ToastPlugin)
@@ -48,6 +39,5 @@ Vue.prototype.$http = new ChainAPI()
 new Vue({
   router,
   store,
-  i18n,
   render: h => h(App),
 }).$mount('#app')

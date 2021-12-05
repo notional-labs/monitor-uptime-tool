@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div class="container-md px-0">
     <b-card>
       <b-card
@@ -59,6 +59,8 @@ export default {
     const pinned = localStorage.getItem('pinned') ? localStorage.getItem('pinned').split(',') : ''
     return {
       pinned,
+      chain,
+      query: '',
       chains: [],
       missing: {},
       blocks: Array.from('0'.repeat(50)).map(x => ({ sigs: {}, height: Number(x) })),
@@ -68,7 +70,8 @@ export default {
   },
   computed: {
     uptime() {
-      const vals = this.chains // vals now contains chains data
+      const vals = this.chains
+      console.log(vals)
       vals.sort((a, b) => b.delegator_shares - a.delegator_shares)
       return vals.map(x => ({
         validator: x.description,
@@ -76,12 +79,20 @@ export default {
       }))
     },
   },
+  
   created() {
-    this.$http.getChainList().then(res => { // change to getChainList()
-        this.chains = res
-    })
+    const cached = JSON.parse(getCachedValidators(this.$route.params.chain))
+
+    if (cached) {
+      this.validators = cached
+    } else {
+      this.$http.getBatchValidator().then(res => {
+        this.validators = res
+      })
+    }
     this.initBlocks()
   },
+
   beforeDestroy() {
     this.blocks = [] // clear running tasks if it is not finish
     this.syncing = false
