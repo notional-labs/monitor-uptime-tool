@@ -13,6 +13,7 @@ module.exports = {
     },
   },
   configureWebpack: {
+    devtool: 'source-map',
     resolve: {
       alias: {
         '@themeConfig': path.resolve(__dirname, 'themeConfig.js'),

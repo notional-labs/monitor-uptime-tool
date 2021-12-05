@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 // import axios from 'axios'
+/* eslint-disable */
 import store from '@/store'
 import compareVersions from 'compare-versions'
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
@@ -88,8 +89,10 @@ export default class ChainFetch {
     return this.get(`/txs?message.recipient=${recipient}`)
   }
 
-  async getTxsByHeight(height) {
-    return this.get(`/txs?tx.height=${height}`)
+  async getTxsByHeight(height, config = null) {
+    const conf = config || this.getSelectedConfig()
+
+    return this.get(`/cosmos/tx/v1beta1/txs?events=tx.height=${height}`, conf)
   }
 
   async getValidatorDistribution(address) {

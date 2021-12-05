@@ -45,13 +45,14 @@
               v-for="(b,i) in blocks"
               :key="i"
               style="width:1.5%;"
-            ><router-link :to="`./blocks/${b.height}`">
+            ><router-link :to="`./blocks/${b.sigs[x.chain_name]}`">
               <div
                 v-b-tooltip.hover.v-second
-                :title="b.height"
+                :title="b.sigs[x.chain_name]"
                 :class="b.sigs && b.sigs[x.chain_name] ? b.sigs[x.chain_name] : 'bg-light-danger'"
                 class="m-auto"
-              >&nbsp;</div>
+              >
+              &nbsp;</div>
             </router-link>
             </div>
           </div>
@@ -62,13 +63,12 @@
 </template>
 
 <script>
+/* eslint-disable */
+
 import {
   BRow, BCol, VBTooltip, BFormInput, BCard, BAlert, BFormCheckbox, BButton,
 } from 'bootstrap-vue'
-
 import { timeIn, toDay } from '@/libs/data'
-/* eslint-disable */
-
 export default {
   components: {
     BRow,
@@ -99,16 +99,13 @@ export default {
   computed: {
     uptime() {
       const addresses = JSON.parse(localStorage.getItem('addresses'))
-      console.log("vuong")
-      console.log(addresses)
+
       const vals = this.chain_info
-      console.log(vals)
 
       const ans = Object.entries(vals).map(x => ({
         chain_name: x[0],
         address: "fucking that shit",
       }))
-      console.log(ans)
       return ans
     },
   },
@@ -126,40 +123,30 @@ export default {
       localStorage.setItem('pinned', this.pinned)
     },
     initBlocks() {
-      this.$http.getLatestBlock().then(d => {
-        const { height } = d.block.last_commit
-        if (timeIn(d.block.header.time, 3, 'm')) {
-          this.syncing = true
-        } else {
-          this.syncing = false
-        }
-        this.latestTime = toDay(d.block.header.time, 'long')
-        const blocks = []
+      const lschains = JSON.parse(localStorage.getItem('chains'))
+      const addresses = JSON.parse(localStorage.getItem('addresses'))
+      const blocks = []
         // update height
-        let promise = Promise.resolve()
-        for (let i = height - 1; i > height - 50; i -= 1) {
-          blocks.unshift({ sigs: {}, height: i > 0 ? i : 0 })
-          if (i > height - 48 && i > 0) {
-            promise = promise.then(() => new Promise(resolve => {
-              this.fetch_status(i, resolve)
-            }))
-          }
-        }
+      for (let i = 50; i > 0; i -= 1) {
+        blocks.unshift({ sigs: {signal : "", height : ""}})
+      }
+      let promise = Promise.resolve()
 
-        const sigs = this.initColor()
-        // d.block.last_commit.signatures.forEach(x => {
-        //   if (x.validator_address) sigs[x.validator_address] = 'bg-success'
-        // })
-        blocks.push({ sigs, height })
-        this.blocks = blocks
+       const sigs = this.initColor()
+      // d.block.last_commit.signatures.forEach(x => {
+      //   if (x.validator_address) sigs[x.validator_address] = 'bg-success'
+      // })
+      blocks.push({ sigs })
+      this.blocks = blocks
 
-        this.timer = setInterval(this.fetch_latest, 6000)
-      })
+      this.timer = setInterval(this.fetch_latest_txs_ibc, 6000)
     },
+    //TODO : query height here add height
     initColor() {
+      const lschains = JSON.parse(localStorage.getItem('chains'))
       const sigs = {}
-      Object.entries(this.chain_info).forEach(x => {
-        sigs[x.chain_name] = 'bg-success'
+      Object.entries(lschains).forEach(x => {
+        sigs[x[1].chain_name] = {signal :'bg-success', height: 0}
       })
       return sigs
     },
@@ -195,15 +182,15 @@ export default {
       const addresses = JSON.parse(localStorage.getItem('addresses'))
 
       const block = this.blocks.find(b => b.height === height)
-      if (block) {
-        for (const config in lschains){
-          const height = this.$http.getLatestBlock(config).then(res => {
-            return res.block.last_commit.height
-          })
-          
-          this.$http.getTxsByHeight(height, config).then(res => {
-            const sigs = this.initColor()
 
+      if (block) {
+        for (const config of lschains){
+          this.$http.getLatestBlock(config).then(res => {
+            const height =  res.block.last_commit.height
+          })
+          this.$http.getTxsByHeight(8566070, height).then(res => {
+            resolve()
+            const sigs = this.initColor()
             if (res.total_count == 0){  
               sigs[config.chain_name] = 'bg-white'
               this.blocks[49] = {sigs, height: res.block.last_commit.height}
@@ -220,63 +207,62 @@ export default {
               }
               //msg Fail 
               if (transaction_res[i].code !== 0){
-                sigs[addresses[config.chain_name]] = "bg-danger"
+                sigs[addresses[config.chain_name]] = {
+                signal :"bg-danger",
+                height : height
+                }
               }
             }
-
-            const block = this.blocks.find(b => b[1] === height)
-            if (typeof block === 'undefined' && res.total_count !== 0 ) {
-              // this.$set(block, 0, typeof sigs !== 'undefined')
-              if (this.blocks.length >= 50) this.blocks.shift()
-              this.blocks.push({ sigs, height: height })
-            }
-        })
-      }}
+          })
+        }
+        const block = this.blocks.find(b => b[1] === height)
+        if (typeof block === 'undefined' && res.total_count !== 0 ) {
+          // this.$set(block, 0, typeof sigs !== 'undefined')
+          if (this.blocks.length >= 50) this.blocks.shift()
+          this.blocks.push({ sigs })
+        }
+      }
     },
     fetch_latest_txs_ibc() {
       const lschains = JSON.parse(localStorage.getItem('chains'))
       const addresses = JSON.parse(localStorage.getItem('addresses'))
-
       for (const config in lschains){
-        const height = this.$http.getLatestBlock(config).then(res => {
-          return res.block.last_commit.height
-        })
-        
-        this.$http.getTxsByHeight(height, config).then(res => {
-          const sigs = this.initColor()
-
-          if (res.total_count == 0){  
-            sigs[config.chain_name] = 'bg-white'
-            this.blocks[49] = {sigs, height: res.block.last_commit.height}
-            return
-          }
-          const transacsion_ls = res.txs
-          const transaction_res = res.tx_responses
-
-          for (let i = 0; i < res.total_count; i++ ){
-            if (!transacsion_ls[i].body.messages[0].includes('MsgUpdateClient') 
-            && !transacsion_ls[i].body.messages[0].includes('MsgAcknowledgement') 
-            && !transacsion_ls[i].body.messages[0].includes('MsgRecvPacket')){
-              continue
+        console.log(config)
+        this.$http.getLatestBlock(lschains[config]).then(res1 => {
+            var height = res1.block.last_commit.height
+            this.$http.getTxsByHeight(height, lschains[config]).then(res => {
+            const sigs = this.initColor()
+            if (res.txs.length == 0){  
+              sigs[config.chain_name] = 'bg-white'
+              this.blocks[49] = {sigs, height: res.block.last_commit.height}
+              return
             }
-            //msg Fail
-            if (transaction_res[i].code !== 0){
-              sigs[addresses[config.chain_name]] = {
-                signal :"bg-success",
-                height : height
+            const transacsion_ls = res.txs
+            const transaction_res = res.tx_responses
+
+            for (let i = 0; i < res.total_count; i++ ){
+              if (!transacsion_ls[i].body.messages[0].includes('MsgUpdateClient') 
+              && !transacsion_ls[i].body.messages[0].includes('MsgAcknowledgement') 
+              && !transacsion_ls[i].body.messages[0].includes('MsgRecvPacket')){
+                continue
+              }
+              //msg Fail
+              if (transaction_res[i].code !== 0){
+                sigs[addresses[config.chain_name]] = {
+                  signal : "bg-danger",
+                  height : height
+                }
               }
             }
-          }
-        })
+          })
+       })
+        const block = this.blocks.find(b => b[1] === height)
+        if (typeof block === 'undefined' && res.total_count !== 0 ) {
+          // this.$set(block, 0, typeof sigs !== 'undefined')
+          if (this.blocks.length >= 50) this.blocks.shift()
+          this.blocks.push({ sigs })
+        }
       }
-      const block = this.blocks.find(b => b[1] === height)
-      if (typeof block === 'undefined' && res.total_count !== 0 ) {
-        // this.$set(block, 0, typeof sigs !== 'undefined')
-        if (this.blocks.length >= 50) this.blocks.shift()
-        this.blocks.push({ sigs })
-      }
-        
-    
     },
   },
 }
