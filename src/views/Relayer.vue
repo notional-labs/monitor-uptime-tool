@@ -33,7 +33,7 @@
           md="4"
           class="text-truncate"
         >
-        <span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{ x.chain_data }}</span>
+        <span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }}. {{ x.chain_data.chain_name }}</span>
 
         <RelayerBlock 
           :chain= "x.chain_data"
@@ -90,6 +90,7 @@ export default {
       return ans
     },
   },
+  
   created() {
     this.chain_info = JSON.parse(localStorage.getItem('chains'))
   },
@@ -98,3 +99,7 @@ export default {
     this.syncing = false
     clearInterval(this.timer)
   }
+}
+</script>
+
+<style></style>

@@ -1,10 +1,13 @@
+<!-- eslint-disable -->
 <template>
     <div class="d-flex justify-content-between align-self-stretch flex-wrap">
+          <span>No new tx relayer is produced since  <strong>{{ no_tx_count }}</strong> </span>
             <div
               v-for="(b,i) in blocks"
               :key="i"
               style="width:1.5%;"
-            ><router-link :to="`./blocks/${b.height}`">
+            >
+            <router-link :to="`./blocks/${b.height}`">
               <div
                 v-b-tooltip.hover.v-second
                 :title="b.height"
@@ -14,6 +17,7 @@
             </router-link>
             </div>
           </div>
+          
 </template>
 <script>
 
@@ -43,7 +47,7 @@ export default {
       missing: {},
       blocks: Array.from('0'.repeat(50)).map(x => ({ sigs: "", height: Number(x) })),
       syncing: false,
-      latestTime: '',
+      no_tx_count: 0,
     }
   },
   created() {
@@ -101,24 +105,34 @@ export default {
             const transacsion_ls = res.txs
             const transaction_res = res.tx_responses
 
-            for (let i = 0; i < res.total_count; i++ ){
+            for (let i = 0; i < res.txs.length; i+=1 ){
               //TODO : CHECK NOTIONAL TX HERE
-              if (!transacsion_ls[i].body.messages[0].includes('MsgUpdateClient') 
-              && !transacsion_ls[i].body.messages[0].includes('MsgAcknowledgement') 
-              && !transacsion_ls[i].body.messages[0].includes('MsgRecvPacket')){
+              if (!transacsion_ls[i].body.messages[0]["@type"].includes('MsgUpdateClient') 
+              && !transacsion_ls[i].body.messages[0]["@type"].includes('MsgAcknowledgement') 
+              && !transacsion_ls[i].body.messages[0]["@type"].includes('MsgRecvPacket')){
+                signal = "bg-light-success"
                 continue
               }
               //msg Fail
+              console.log(transaction_res[i].code)
+
               if (transaction_res[i].code !== 0){
-                    signal : "bg-danger"
-                }
+                  signal = "bg-danger"
+              }
+              signal = "bg-success"
             }
             const block = this.blocks.find(b => b.height === height)
             if (typeof block === 'undefined') { // mei
             // this.$set(block, 0, typeof sigs !== 'undefined')
-                if (this.blocks.length >= 50) this.blocks.shift()
+              if (this.blocks.length >= 50) this.blocks.shift()
                 this.blocks.push({ sigs: signal, height : height  })
+                if (signal === "bg-light-success"){
+                  this.no_tx_count += 1
+                }else{
+                  this.no_tx_count = 0
+                }
             }
+            
           })
        })      
     },
