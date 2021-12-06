@@ -28,7 +28,7 @@ const router = new VueRouter({
     },
     // chain modules
     {
-      path: '/:chain/',
+      path: '/uptime/:chain/',
       name: 'info',
       alias: '/:chain',
       component: () => import('@/views/Summary.vue'),
@@ -57,7 +57,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/:chain/blocks',
+      path: '/uptime/:chain/blocks',
       name: 'blocks',
       component: () => import('@/views/Blocks.vue'),
       meta: {

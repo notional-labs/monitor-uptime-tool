@@ -1,0 +1,22 @@
+[
+    {
+        "chain_name": "osmosis",
+        "address": "osmovaloper1083svrca4t350mphfv9x45wq9asrs60c6rv0j5",
+        "chain_id": "osmosis-1",
+        "endpoint": "https://cosmos.api.ping.pub"
+    },
+    {
+        "chain_name": "starname",
+        "address": "starvaloper1pdqlmncych8uzsfdnsptv7s0wpazc0rgv7zc6h",
+        "chain_id": "iov-mainnet-ibc",
+        "endpoint": "https://api.iov-mainnet-ibc.iov.one"
+
+    },
+    {
+        "chain_name": "regen",
+        "address": "regenvaloper1083svrca4t350mphfv9x45wq9asrs60ct2p9a",
+        "chain_id": "regen-1",
+        "endpoint": "162.55.132.230:2061"
+    }
+
+]

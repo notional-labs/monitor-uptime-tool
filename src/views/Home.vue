@@ -1,51 +1,56 @@
 <template>
-  <div class="text-center container-lg">
-    <b-nav
-      align="right"
-      style="width:100%"
-      class="nav text-right text-nowrap ml-auto"
-    >
-      <b-nav-item><dark-toggler /></b-nav-item>
+<div class="text-center container-lg">
+  <div>
+    <b-nav align="right" class="nav text-right text-nowrap ml-auto">
+      <b-nav-item>
+        <dark-toggler />
+      </b-nav-item>
     </b-nav>
 
-    <div>
-      <b-row class="match-height">
-        <b-col
-          md="4"
-          sm="6"
-        >
-            <b-button
-              class="btn text-left"
-              :to="{ name: 'uptime' }"
-            >
-              <b-row>
-                <b-col cols="8">
-                  <b-card-title class="mb-1 text-uppercase"> Uptime </b-card-title>
-                </b-col>
-              </b-row>
-            </b-button>
-            <div>
-            </div>
-            <b-button
-              class="btn text-left"
-              :to="{ name: 'relayer' }"
-            >
-              <b-row>
-                <b-col cols="8">
-                  <b-card-title class="mb-1 text-uppercase"> Relayer </b-card-title>
-                </b-col>
-              </b-row>
-            </b-button>
-        </b-col>
-      </b-row>
+    <div class="d-flex justify-content-center align-items-center">
+      <h1 class="text-primary display-4 font-weight-bolder d-none d-md-block">
+        Notional Labs
+      </h1>
     </div>
+
+    <p class="mb-1">
+      Uptime Monitoring tool for Notional gangs....
+    </p>
   </div>
+
+  <div>
+
+    <b-card-group>
+      <b-card
+        bg-variant="primary"
+        style="max-width: 40rem;"
+      >
+        <b-button
+          class="btn text-left"
+          :to="{ name: 'uptime' }"
+          variant="danger"
+        >
+          <b-card-title class="mb-1 text-uppercase"> Uptime </b-card-title>
+        </b-button>
+      </b-card>
+
+      <b-card
+        bg-variant="primary"
+        style="max-width: 40rem;"
+      >
+        <b-button class="btn text-left" :to="{ name: 'relayer' }">
+          <b-card-title class="mb-1 text-uppercase"> Relayer </b-card-title>
+        </b-button>
+      </b-card>
+    </b-card-group>
+  </div>
+</div>
 </template>
 
 <script>
 /* eslint-disable global-require */
 import {
-  BRow, BCol, BCardTitle, BNav, BNavItem, BButton,
+  BCardTitle, BNav, BNavItem, BButton,
 } from 'bootstrap-vue'
 import store from '@/store/index'
 import { timeIn, toDay } from '@/libs/data'
@@ -53,8 +58,6 @@ import DarkToggler from '@/@core/layouts/components/app-navbar/components/DarkTo
 
 export default {
   components: {
-    BRow,
-    BCol,
     BCardTitle,
     BNav,
     BNavItem,
@@ -85,6 +88,9 @@ export default {
           })
         }
       })
+    },
+    goRelayer() {
+      this.$router.push('/relayer')
     },
   },
 }

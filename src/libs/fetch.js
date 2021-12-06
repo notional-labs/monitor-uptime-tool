@@ -1,3 +1,4 @@
+/* eslint-disable */
 import fetch from 'node-fetch'
 // import axios from 'axios'
 /* eslint-disable */
@@ -9,7 +10,6 @@ import {
   Proposal, ProposalTally, Proposer, StakingPool, Votes, Deposit,
   Validator, StakingParameters, Block, ValidatorDistribution, StakingDelegation, WrapStdTx, getUserCurrency,
 } from './data'
-import OsmosAPI from './osmos'
 
 function commonProcess(res) {
   if (res && Object.keys(res).includes('result')) {
@@ -25,10 +25,6 @@ export function keybase(identity) {
 }
 
 export default class ChainFetch {
-  constructor() {
-    this.osmosis = new OsmosAPI()
-  }
-
   //============ CHAIN CONFIG ============
   getSelectedConfig() {
     let chain = store.state.chains.selected
@@ -121,10 +117,6 @@ export default class ChainFetch {
     return this.get('/cosmos/bank/v1beta1/supply').then(data => data.supply)
   }
 
-  async getStakingPool() {
-    return this.get('/staking/pool').then(data => new StakingPool().init(commonProcess(data)))
-  }
-
   async getMintingInflation() {
     if (this.isModuleLoaded('minting')) {
       return this.get('/minting/inflation').then(data => Number(commonProcess(data)))
@@ -155,20 +147,23 @@ export default class ChainFetch {
     // get validator from local storage
     const addresses = JSON.parse(localStorage.getItem('addresses'))
 
-    let vals = {}
-    
+    let chains = []
     Promise.all(Object.keys(lschains).map(async (key) => {
       let config = lschains[key]
+      let chain = {}
       if (!config.sdk_version) {
         config.sdk_version = '0.33'
       }
 
-      const val = await this.get(`/staking/validators/${addresses[key]}`, config).then(data => new Validator().init(commonProcess(data)))
-      //localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
-      vals[config.chain_name] = val
+      if (addresses[key]) {
+        const val = await this.get(`/staking/validators/${addresses[key].valAddr}`, config).then(data => new Validator().init(commonProcess(data)))
+        //    localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
+        chain['validator'] = val
+        chain['config'] = config
+        chains.push(chain)
+      }
     }));
-
-    return vals
+    return chains
   }
 
   async getValidatorListByHeight(height) {
