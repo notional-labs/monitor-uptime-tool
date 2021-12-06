@@ -6,5 +6,57 @@
     "starname" : {
         "valAddr" : "starvaloper1pdqlmncych8uzsfdnsptv7s0wpazc0rgv7zc6h",
         "relayerAddr" : ""
+    },
+    "cosmos" : {
+        "valAddr" : "cosmosvaloper1083svrca4t350mphfv9x45wq9asrs60cdmrflj",
+        "relayerAddr" : ""
+    },
+    "regen" : {
+        "valAddr" : "regenvaloper1083svrca4t350mphfv9x45wq9asrs60ct2p9a5",
+        "relayerAddr" : ""
+    },
+    "akash" : {
+        "valAddr" : "akashvaloper1083svrca4t350mphfv9x45wq9asrs60c0k5a63",
+        "relayerAddr" : ""
+    },
+    "sentinel" : {
+        "valAddr" : "sentvaloper1083svrca4t350mphfv9x45wq9asrs60cv37gc8",
+        "relayerAddr" : ""
+    },
+    "e-money" : {
+        "valAddr" : "emoneyvaloper16dc379m0qj64g4pr4nkl7ewak52qy2srpe6lxp",
+        "relayerAddr" : ""
+    },
+    "ixo" : {
+        "valAddr" : "ixovaloper1083svrca4t350mphfv9x45wq9asrs60camel0h",
+        "relayerAddr" : ""
+    },
+    "juno" : {
+        "valAddr" : "junovaloper1083svrca4t350mphfv9x45wq9asrs60cpqzg0y",
+        "relayerAddr" : ""
+    },
+    "sifchain" : {
+        "valAddr" : "sifvaloper1083svrca4t350mphfv9x45wq9asrs60cyssqu6",
+        "relayerAddr" : ""
+    },
+    "likecoin" : {
+        "valAddr" : "cosmosvaloper16dc379m0qj64g4pr4nkl7ewak52qy2srvwj2rz",
+        "relayerAddr" : ""
+    },
+    "kichain" : {
+        "valAddr" : "kivaloper1lmkzaxztjpesh0mf7qy76l5npqwc7fk3l2k57g",
+        "relayerAddr" : ""
+    },
+    "cyber" : {
+        "valAddr" : "bostromvaloper1g65rmjkeuy5rywx04s4fvwfylmlz98vq4gzln5",
+        "relayerAddr" : ""
+    },
+    "cheqd" : {
+        "valAddr" : "cheqdvaloper1gyjqlfkrggd0uyd748fw9y5kq9xzmjqqh8848x",
+        "relayerAddr" : ""
+    },
+    "stargaze" : {
+        "valAddr" : "starsvaloper1v8yp5x5kfex4wep2pfuuyw68cn2lst3ksl0gss",
+        "relayerAddr" : ""
     }
 }
