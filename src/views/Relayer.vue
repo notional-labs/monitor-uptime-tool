@@ -37,7 +37,7 @@
 
         <RelayerBlock 
           :chain= "x.chain_data"
-          :vals = "uptime"/>
+          :relayerAddr = "x.address"/>
         </b-col>
       </b-row>
     </b-card>
@@ -80,12 +80,19 @@ export default {
   },
   computed: {
     uptime() {
-      const vals = this.chain_info
+      const ans = []
+      
+      Promise.all(Object.keys(this.chain_info).map(async (key) => {
+        const chain = {
+          chain_data: this.chain_info[key],
+          address: (key in this.addresses) ? this.addresses[key].relayerAddr : null,
+        }
 
-      //TODO : ADD NOTIONAL ADDR HERE
-      const ans = Object.entries(vals).map(x => ({
-        chain_data: x[1],
-        address: "fucking that shit",
+        console.log(chain.chain_data.chain_name + " = " + chain.address)
+
+        if(chain.address){
+          ans.push(chain)
+        }
       }))
       return ans
     },
@@ -93,6 +100,7 @@ export default {
   
   created() {
     this.chain_info = JSON.parse(localStorage.getItem('chains'))
+    this.addresses = JSON.parse(localStorage.getItem('addresses'))
   },
   beforeDestroy() {
     this.blocks = [] // clear running tasks if it is not finish

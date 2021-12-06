@@ -1,6 +1,7 @@
 import {
   Bech32, fromBase64, fromHex, toHex,
 } from '@cosmjs/encoding'
+import { pubkeyToAddress } from '@cosmjs/amino'
 import { sha256 } from '@cosmjs/crypto'
 
 import { SigningStargateClient } from '@cosmjs/stargate'
@@ -57,7 +58,12 @@ export function operatorAddressToAccount(operAddress) {
 
 // TODO, not tested
 export function pubkeyToAccountAddress(pubkey, prefix) {
-  return Bech32.encode(prefix, pubkey, 40)
+  const formattedPubKey = {
+    value: pubkey.key,
+  }
+  if (pubkey['@type'].includes('secp256k1')) formattedPubKey.type = 'tendermint/PubKeySecp256k1'
+
+  return pubkeyToAddress(formattedPubKey, prefix)
 }
 
 export function addressDecode(address) {

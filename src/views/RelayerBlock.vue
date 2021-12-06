@@ -1,7 +1,7 @@
 <!-- eslint-disable -->
 <template>
     <div class="d-flex justify-content-between align-self-stretch flex-wrap">
-          <span>No new tx relayer is produced since  <strong>{{ no_tx_count }}</strong> </span>
+          <span>No new tx relayer is produced for <strong>{{ no_tx_count }}</strong> blocks </span>
             <div
               v-for="(b,i) in blocks"
               :key="i"
@@ -23,6 +23,7 @@
 
 /* eslint-disable */
 import { VBTooltip } from 'bootstrap-vue'
+import {pubkeyToAccountAddress} from '../libs/data/data'
 import {
   timeIn, toDay,
 } from '@/libs/data'
@@ -37,9 +38,9 @@ export default {
       type: Object,
       default: null,
     },
-    vals: {
-      type: Array,
-      default: () => [],
+    relayerAddr: {
+      type: String,
+      default: "",
     }
   },
   data() {
@@ -51,6 +52,8 @@ export default {
     }
   },
   created() {
+    this.current_height = 0
+    this.getLatestTxSucessful = false
     this.initBlocks()
   },
 
@@ -63,8 +66,9 @@ export default {
     pinValidator() {
       localStorage.setItem('pinned', this.pinned)
     },
+    // query block from before 1000 blocks
     initBlocks() {
-        this.$http.getLatestBlock(this.chain).then(d => {
+      this.$http.getLatestBlock(this.chain).then(d => {
         const { height } = d.block.last_commit
         if (timeIn(d.block.header.time, 3, 'm')) {
           this.syncing = true
@@ -78,7 +82,8 @@ export default {
             blocks.unshift({ sigs: "bg-light-success"})
         }
         this.blocks = blocks
-        this.timer = setInterval(this.fetch_latest_txs_ibc, 200)
+        console.log("set up interval")
+        this.timer = setInterval(this.fetch_latest_txs_ibc, 1000)
       })
     },
     initColor() {
@@ -87,9 +92,31 @@ export default {
     //some chain can't query pls check API
     //and change api to get tx_res
     fetch_latest_txs_ibc() {
-        this.$http.getLatestBlock(this.chain).then(res1 => {
-            var height = res1.block.last_commit.height
-            this.$http.getTxsByHeight(height, this.chain).then(res => {
+        console.log(this.chain.chain_name)
+        this.$http.getLatestBlock(this.chain).then(blockRes => {
+          //stop calling the same height multiple time
+          var height = blockRes.block.last_commit.height
+          if(height > this.current_height){
+            this.current_height = height
+            //reset state of getLatestTxSucessful for new height
+            this.getLatestTxSucessful = false
+          }
+
+          if(height <= this.current_height && this.getLatestTxSucessful){
+            return
+          }
+
+          this.$http.getTxsByHeight(height, this.chain).then(res => {
+            if(!res) return
+            // if res.code exists means that there is an error
+            else if(res.code){
+              console.log("Error = " + res.message)
+              return
+            }
+            else {
+              this.getLatestTxSucessful = true
+            }
+
             var signal = this.initColor()
             if (res.txs.length === 0){  
                 const block = this.blocks.find(b => b.height === height)
@@ -106,18 +133,28 @@ export default {
             const transaction_res = res.tx_responses
 
             for (let i = 0; i < res.txs.length; i+=1 ){
-              //TODO : CHECK NOTIONAL TX HERE
-              if (!transacsion_ls[i].body.messages[0]["@type"].includes('MsgUpdateClient') 
-              && !transacsion_ls[i].body.messages[0]["@type"].includes('MsgAcknowledgement') 
-              && !transacsion_ls[i].body.messages[0]["@type"].includes('MsgRecvPacket')){
+              //CHECK IF NO SUCH IBC MESSAGE
+              // the first transaction of an IBC packet is always MsgUpdateClient
+              if (
+                !transacsion_ls[i].body.messages[0]["@type"].includes('MsgUpdateClient') 
+              ){
                 signal = "bg-light-success"
                 continue
               }
-              //msg Fail
-              console.log(transaction_res[i].code)
 
+              //CHECK IF TX IS FROM THIS CHAIN's NOTIONAL RELAYER
+              const addr = pubkeyToAccountAddress(transacsion_ls[i].auth_info.signer_infos[0].public_key, this.chain.addr_prefix)
+              if(addr != this.relayerAddr){
+                signal = "bg-light-success"
+                continue
+              }
+
+              console.log(transacsion_ls[i])
+
+              //msg Fail
               if (transaction_res[i].code !== 0){
-                  signal = "bg-danger"
+                signal = "bg-danger"
+                break
               }
               signal = "bg-success"
             }
@@ -134,7 +171,7 @@ export default {
             }
             
           })
-       })      
+        })      
     },
   },
 }
