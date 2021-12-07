@@ -126,6 +126,8 @@ router.beforeEach((to, from, next) => {
   } else if (c) {
     if (c === 'index.php') {
       next({ name: '/' })
+    } else if (c === 'uptime') {
+      next({ name: 'uptime' })
     } else {
       next({ name: 'chain-404' })
     }
