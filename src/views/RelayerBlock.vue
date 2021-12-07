@@ -66,7 +66,7 @@ export default {
     pinValidator() {
       localStorage.setItem('pinned', this.pinned)
     },
-    // query block from before 1000 blocks
+    // query block from before 500 blocks
     initBlocks() {
       this.$http.getLatestBlock(this.chain).then(d => {
         const { height } = d.block.last_commit
@@ -78,8 +78,9 @@ export default {
         this.latestTime = toDay(d.block.header.time, 'long')
         const blocks = []
         // update height
-        for (let i = 50; i > 0; i -= 1) {
-            blocks.unshift({ sigs: "bg-light-success"})
+        for (let i = height - 1; i > height - 500; i -= 1) {
+          const txExisted = this.handleTxFromBlock(height)
+          blocks.unshift({ sigs: "bg-light-success", height: i > 0 ? i : 0 })
         }
         this.blocks = blocks
         console.log("set up interval")
@@ -87,7 +88,7 @@ export default {
       })
     },
     initColor() {
-      return "bg-success"
+      return "bg-light-success"
     },
     //some chain can't query pls check API
     //and change api to get tx_res
@@ -95,84 +96,82 @@ export default {
         console.log(this.chain.chain_name)
         this.$http.getLatestBlock(this.chain).then(blockRes => {
           //stop calling the same height multiple time
-          var height = blockRes.block.last_commit.height
-          if(height > this.current_height){
-            this.current_height = height
-            //reset state of getLatestTxSucessful for new height
-            this.getLatestTxSucessful = false
+          const height = blockRes.block.last_commit.height
+          const txExisted = this.handleTxFromBlock(height)
+          if(txExisted) this.no_tx_count = 0
+          else{
+            this.handleWhiteBlock(height)
           }
-
-          if(height <= this.current_height && this.getLatestTxSucessful){
-            return
-          }
-
-          this.$http.getTxsByHeight(height, this.chain).then(res => {
-            if(!res) return
-            // if res.code exists means that there is an error
-            else if(res.code){
-              console.log("Error = " + res.message)
-              return
-            }
-            else {
-              this.getLatestTxSucessful = true
-            }
-
-            var signal = this.initColor()
-            if (res.txs.length === 0){  
-                const block = this.blocks.find(b => b.height === height)
-                // you can change the colour u like
-                signal = 'bg-light-success'
-                if (typeof block === 'undefined') { // mei
-                // this.$set(block, 0, typeof sigs !== 'undefined')
-                    if (this.blocks.length >= 50) this.blocks.shift()
-                    this.blocks.push({ sigs: signal, height : height  })
-                }
-              return
-            }
-            const transacsion_ls = res.txs
-            const transaction_res = res.tx_responses
-
-            for (let i = 0; i < res.txs.length; i+=1 ){
-              //CHECK IF NO SUCH IBC MESSAGE
-              // the first transaction of an IBC packet is always MsgUpdateClient
-              if (
-                !transacsion_ls[i].body.messages[0]["@type"].includes('MsgUpdateClient') 
-              ){
-                signal = "bg-light-success"
-                continue
-              }
-
-              //CHECK IF TX IS FROM THIS CHAIN's NOTIONAL RELAYER
-              const addr = pubkeyToAccountAddress(transacsion_ls[i].auth_info.signer_infos[0].public_key, this.chain.addr_prefix)
-              if(addr != this.relayerAddr){
-                signal = "bg-light-success"
-                continue
-              }
-
-              console.log(transacsion_ls[i])
-
-              //msg Fail
-              if (transaction_res[i].code !== 0){
-                signal = "bg-danger"
-                break
-              }
-              signal = "bg-success"
-            }
-            const block = this.blocks.find(b => b.height === height)
-            if (typeof block === 'undefined') { // mei
-            // this.$set(block, 0, typeof sigs !== 'undefined')
-              if (this.blocks.length >= 50) this.blocks.shift()
-                this.blocks.push({ sigs: signal, height : height  })
-                if (signal === "bg-light-success"){
-                  this.no_tx_count += 1
-                }else{
-                  this.no_tx_count = 0
-                }
-            }
-            
-          })
         })      
     },
+    // return true for tx existed, false for tx not existed
+    handleTxFromBlock(height){
+      let signal = this.initColor()
+
+      if(height > this.current_height){
+        this.current_height = height
+        //reset state of getLatestTxSucessful for new height
+        this.getLatestTxSucessful = false
+      }
+
+      if(height <= this.current_height && this.getLatestTxSucessful){
+        return signal
+      }
+
+      this.$http.getTxsByHeight(height, this.chain).then(res => {
+        if(!res) return
+        // if res.code exists means that there is an error
+        else if(res.code){
+          console.log("Error = " + res.message)
+          return
+        }
+        else {
+          this.getLatestTxSucessful = true
+        }
+
+        if (res.txs.length === 0){  
+          return
+        }
+        const transacsion_ls = res.txs
+        const transaction_res = res.tx_responses
+
+        //extract txs from block
+        for (let i = 0; i < res.txs.length; i+=1 ){
+          //CHECK IF NO SUCH IBC MESSAGE
+          // the first transaction of an IBC packet is always MsgUpdateClient
+          if (
+            !transacsion_ls[i].body.messages[0]["@type"].includes('MsgUpdateClient') 
+          ){
+            continue
+          }
+
+          //CHECK IF TX IS FROM THIS CHAIN's NOTIONAL RELAYER
+          const addr = pubkeyToAccountAddress(transacsion_ls[i].auth_info.signer_infos[0].public_key, this.chain.addr_prefix)
+          if(addr != this.relayerAddr){
+            continue
+          }
+
+          //msg Fail
+          if (transaction_res[i].code !== 0){
+            signal = "bg-danger"
+            
+            continue
+          }
+          signal = "bg-success"
+        }
+      })
+
+      return signal
+    },
+    //white block is block without tx
+    handleWhiteBlock(height){
+      const block = this.blocks.find(b => b.height === height)
+      if (typeof block === 'undefined') { // mei
+        if (this.blocks.length >= 50) this.blocks.shift()
+        this.blocks.push({ sigs: "bg-light-success", height : height  })
+        this.no_tx_count += 1
+      }
+    }
   },
 }
 </script>
