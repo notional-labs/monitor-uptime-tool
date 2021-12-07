@@ -97,8 +97,18 @@ export default {
         this.$http.getLatestBlock(this.chain).then(blockRes => {
           //stop calling the same height multiple time
           const height = blockRes.block.last_commit.height
-          const txExisted = this.handleTxFromBlock(height)
-          if(txExisted) this.no_tx_count = 0
+          const signal = this.handleTxFromBlock(height)
+          
+          //handling signal
+          if(!signal){
+            //signal is null
+            //indicating that handleTxFromBlock refuse to process this height
+          }
+          else if(signal !== "bg-light-success") {
+            this.no_tx_count = 0
+            if (this.blocks.length >= 50) this.blocks.shift()
+            this.blocks.push({ sigs: signal, height : height  })
+          }
           else{
             this.handleWhiteBlock(height)
           }
@@ -107,6 +117,7 @@ export default {
     // return true for tx existed, false for tx not existed
     handleTxFromBlock(height){
       let signal = this.initColor()
+      let signals = new Set()
 
       if(height > this.current_height){
         this.current_height = height
@@ -115,7 +126,7 @@ export default {
       }
 
       if(height <= this.current_height && this.getLatestTxSucessful){
-        return signal
+        return null
       }
 
       this.$http.getTxsByHeight(height, this.chain).then(res => {
@@ -132,7 +143,7 @@ export default {
         if (res.txs.length === 0){  
           return
         }
-        const transacsion_ls = res.txs
+        const transaction_ls = res.txs
         const transaction_res = res.tx_responses
 
         //extract txs from block
@@ -140,26 +151,42 @@ export default {
           //CHECK IF NO SUCH IBC MESSAGE
           // the first transaction of an IBC packet is always MsgUpdateClient
           if (
-            !transacsion_ls[i].body.messages[0]["@type"].includes('MsgUpdateClient') 
+            !transaction_ls[i].body.messages[0]["@type"].includes('MsgUpdateClient') 
           ){
+            signals.add("bg-light-success")
             continue
           }
 
           //CHECK IF TX IS FROM THIS CHAIN's NOTIONAL RELAYER
-          const addr = pubkeyToAccountAddress(transacsion_ls[i].auth_info.signer_infos[0].public_key, this.chain.addr_prefix)
+          const addr = pubkeyToAccountAddress(transaction_ls[i].auth_info.signer_infos[0].public_key, this.chain.addr_prefix)
           if(addr != this.relayerAddr){
+            signals.add("bg-light-success")
             continue
           }
 
-          //msg Fail
-          if (transaction_res[i].code !== 0){
-            signal = "bg-danger"
-            
-            continue
+          if (transaction_res[i].code === 0){
+            //handling success tx
+            signals.add("bg-success")
+          }else{
+            //handling fail tx
+            signals.add("bg-danger")
           }
-          signal = "bg-success"
         }
       })
+
+      // determine color for this block
+      if(signals.has("bg-light-success")){
+        signal = "bg-light-success"
+      }
+      else if(signals.size == 3){
+        signal = "bg-warning"
+      }
+      else if(signals.size == 2 && signals.has("bg-success")){
+        signal = "bg-success"
+      }
+      else if(signals.size == 2 && signals.has("bg-danger")){
+        signal = "bg-danger"
+      }
 
       return signal
     },
