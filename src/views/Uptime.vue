@@ -76,14 +76,9 @@ export default {
   },
 
   created() {
-    const cached = JSON.parse(getCachedValidators(this.$route.params.chain))
-    if (cached) {
-      this.chains = cached
-    } else {
-      this.$http.getBatchValidator().then(res => {
+    this.$http.getBatchValidator().then(res => {
         this.chains = res
       })
-    }
   },
 
   beforeDestroy() {

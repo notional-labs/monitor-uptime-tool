@@ -140,7 +140,7 @@ export default class ChainFetch {
 
   async getBatchValidator() {
     // get chain from local storage
-    const lschains = JSON.parse(localStorage.getItem('chains'))
+     const lschains = JSON.parse(localStorage.getItem('chains'))
     // get validator from local storage
     const addresses = JSON.parse(localStorage.getItem('addresses'))
 

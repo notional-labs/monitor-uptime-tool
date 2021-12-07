@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start" : "vue-cli-service serve",
+    "start": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
@@ -46,6 +46,7 @@
     "portal-vue": "2.1.7",
     "postcss-rtl": "1.7.3",
     "prismjs": "1.24.0",
+    "serve": "^13.0.2",
     "swiper": "6.5.1",
     "uuid": "8.3.2",
     "vee-validate": "3.4.5",
