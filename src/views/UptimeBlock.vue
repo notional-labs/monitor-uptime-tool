@@ -1,18 +1,18 @@
 <template>
-    <div class="d-flex justify-content-between align-self-stretch flex-wrap">
-            <div
-              v-for="(b,i) in blocks"
-              :key="i"
-              style="width:1.5%;"
-            ><router-link :to="`./blocks/${b.height}`">
-              <div
-                v-b-tooltip.hover.v-second
-                :title="b.height"
-                :class="b.sigs && b.sigs[chain.address] ? b.sigs[chain.address] : 'bg-light-success'"
-                class="m-auto"
-              >&nbsp;</div>
-            </router-link>
-            </div>
+  <div class="d-flex justify-content-between align-self-stretch flex-wrap">
+    <div
+      v-for="(b,i) in blocks"
+      :key="i"
+      style="width:1.5%;"
+    ><router-link :to="`./:chains/blocks/${b.height}`">
+      <div
+        v-b-tooltip.hover.v-second
+        :title="b.height"
+        :class="b.sigs && b.sigs[chain.address] ? b.sigs[chain.address] : 'bg-light-success'"
+        class="m-auto"
+      >&nbsp;</div>
+      </router-link>
+      </div>
           </div>
 </template>
 
@@ -21,7 +21,7 @@
 import { VBTooltip } from 'bootstrap-vue'
 
 import {
-  consensusPubkeyToHexAddress, timeIn, toDay, getCachedValidators,
+  consensusPubkeyToHexAddress, timeIn, toDay,
 } from '@/libs/data'
 
 export default {
@@ -86,7 +86,7 @@ export default {
         blocks.push({ sigs, height })
         this.blocks = blocks
 
-        this.timer = setInterval(this.fetch_latest, 6000)
+        this.timer = setInterval(this.fetch_latest, 3000)
       })
     },
     initColor() {

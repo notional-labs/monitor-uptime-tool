@@ -1,8 +1,11 @@
 {
-    "chain_name": "osmosis",
+    "chain_name": "Osmosis",
     "coingecko": "osmosis",
     "api": "https://lcd-osmosis.keplr.app",
+    "endpoint": "http://162.55.132.230:2001",
     "sdk_version": "0.42.5",
     "addr_prefix": "osmo",
-    "logo": "https://dl.airtable.com/.attachments/4ef30ec4008bc86cc3c0f74a6bb84050/0eeb4d64/aQ5W3zaT_400x400.jpg"
+    "logo": "https://dl.airtable.com/.attachments/4ef30ec4008bc86cc3c0f74a6bb84050/0eeb4d64/aQ5W3zaT_400x400.jpg",
+    "valAddr" : "osmovaloper1083svrca4t350mphfv9x45wq9asrs60c6rv0j5",
+    "relayerAddr" : "osmo16dc379m0qj64g4pr4nkl7ewak52qy2srpp40er"
 }

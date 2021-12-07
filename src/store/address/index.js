@@ -1,4 +1,4 @@
-const addresses = require('../../chains/address.json')
+const addresses = require('../../chains/addresses.json')
 
 localStorage.setItem('addresses', JSON.stringify(addresses))
 

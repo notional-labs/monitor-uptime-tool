@@ -12,6 +12,7 @@ echo ""
 # Commit and push to GitHub Page repository
 printf "\033[0;32mGo to /dist...\033[0m\n"
 cd dist
+git init
 git add .
 echo ""
 echo "\033[0;32mCommitting changes...\033[0m\n"

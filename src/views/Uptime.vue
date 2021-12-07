@@ -15,7 +15,7 @@
           md="4"
           class="text-truncate"
         >
-          <span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index+1 }} {{ x.config.chain_name }}</span>
+          <span class="d-inline-block text-truncate font-weight-bold align-bottom">{{ index + 1 }}. {{ x.config.chain_name }}</span>
 
           <UptimeBlock
             :chain="x"
@@ -29,32 +29,29 @@
 </template>
 
 <script>
-/* eslint-disable */
 import {
   BRow, BCol, VBTooltip, BCard,
 } from 'bootstrap-vue'
 
-import UptimeBlock from './UptimeBlock.vue'
-
 import {
-  consensusPubkeyToHexAddress, timeIn, toDay, getCachedValidators,
+  consensusPubkeyToHexAddress,
 } from '@/libs/data'
+
+import UptimeBlock from './UptimeBlock.vue'
 
 export default {
   components: {
     BRow,
     BCol,
     BCard,
-    UptimeBlock
+    UptimeBlock,
   },
   directives: {
     'b-tooltip': VBTooltip,
   },
   data() {
     const { chain } = this.$route.params
-    const pinned = localStorage.getItem('pinned') ? localStorage.getItem('pinned').split(',') : ''
     return {
-      pinned,
       chain,
       query: '',
       chains: [],
@@ -66,7 +63,6 @@ export default {
     uptime() {
       const vals = this.chains
       console.log(vals)
-      vals.sort((a, b) => b.validator.delegator_shares - a.validator.delegator_shares)
       return vals.map(x => ({
         validator: x.validator,
         address: consensusPubkeyToHexAddress(x.validator.consensus_pubkey),
@@ -77,8 +73,8 @@ export default {
 
   created() {
     this.$http.getBatchValidator().then(res => {
-        this.chains = res
-      })
+      this.chains = res
+    })
   },
 
   beforeDestroy() {
