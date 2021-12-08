@@ -1,7 +1,7 @@
 {
     "osmosis" : {
         "valAddr" : "osmovaloper1083svrca4t350mphfv9x45wq9asrs60c6rv0j5",
-        "relayerAddr" : "osmo16dc379m0qj64g4pr4nkl7ewak52qy2srpp40er"
+        "relayerAddr" : ""
     },
     "starname" : {
         "valAddr" : "starvaloper1pdqlmncych8uzsfdnsptv7s0wpazc0rgv7zc6h",

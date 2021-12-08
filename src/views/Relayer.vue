@@ -88,8 +88,6 @@ export default {
           address: (key in this.addresses) ? this.addresses[key].relayerAddr : null,
         }
 
-        console.log(chain.chain_data.chain_name + " = " + chain.address)
-
         if(chain.address){
           ans.push(chain)
         }
