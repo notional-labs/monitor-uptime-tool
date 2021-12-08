@@ -1,0 +1,11 @@
+{
+    "chain_name": "Ixo",
+    "coingecko": "terra-luna",
+    "api": "https://fcd.terra.dev",
+    "endpoint": "https://fcd.terra.dev",
+    "sdk_version": "0.44.2",
+    "addr_prefix": "ixo",
+    "logo": "https://dl.airtable.com/.attachments/275a6cbdbdc911856556e716a60d6ec4/87addd7f/terra.jpg",
+    "valAddr" : "ixovaloper1083svrca4t350mphfv9x45wq9asrs60camel0h",
+    "relayerAddr" : "ixo16dc379m0qj64g4pr4nkl7ewak52qy2srk0cdtz"
+}

@@ -1,0 +1,11 @@
+{
+    "chain_name": "Akash",
+    "coingecko": "akash-network",
+    "api": "https://akash.api.ping.pub",
+    "endpoint": "https://162.55.132.230:2021",
+    "sdk_version": "0.41.3",
+    "addr_prefix": "akash",
+    "logo": "https://dl.airtable.com/.attachments/52586702dd8352d97834fce5c2d83614/969b4d53/akash-network.png",
+    "valAddr" : "akashvaloper1083svrca4t350mphfv9x45wq9asrs60c0k5a63",
+    "relayerAddr" : "akash16dc379m0qj64g4pr4nkl7ewak52qy2sryptckt"
+}

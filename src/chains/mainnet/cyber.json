@@ -1,0 +1,11 @@
+{
+    "chain_name": "Cyber",
+    "coingecko": "terra-luna",
+    "api": "https://fcd.terra.dev",
+    "endpoint": "https://fcd.terra.dev",
+    "sdk_version": "0.44.2",
+    "addr_prefix": "bostrom",
+    "logo": "https://dl.airtable.com/.attachments/275a6cbdbdc911856556e716a60d6ec4/87addd7f/terra.jpg",
+    "valAddr" : "bostromvaloper1g65rmjkeuy5rywx04s4fvwfylmlz98vq4gzln5",
+    "relayerAddr" : "bostrom16dc379m0qj64g4pr4nkl7ewak52qy2sr2fjv3k"
+}

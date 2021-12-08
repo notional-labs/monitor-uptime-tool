@@ -1,0 +1,11 @@
+{
+    "chain_name": "Kichain",
+    "coingecko": "ki",
+    "api": "https://ki.api.ping.pub",
+    "endpoint": "https://ki.api.ping.pub",
+    "sdk_version": "0.42.10",
+    "addr_prefix": "ki",
+    "logo": "https://dl.airtable.com/.attachments/b1f670d31bf69d7ca9906df8437d91a7/b2667ad1/ki.png",
+    "valAddr" : "kivaloper1lmkzaxztjpesh0mf7qy76l5npqwc7fk3l2k57g",
+    "relayerAddr" : "ki16dc379m0qj64g4pr4nkl7ewak52qy2srchhst9"
+}

@@ -1,0 +1,11 @@
+{
+    "chain_name": "PersistenceCore",
+    "coingecko": "persistence",
+    "api": "https://rest.core.persistence.one",
+    "endpoint": "https://rest.core.persistence.one",
+    "sdk_version": "0.42.4",
+    "addr_prefix": "persistence",
+    "logo": "https://dl.airtable.com/.attachments/23178be773dc4de133ca4c07056aba1c/6e855850/persistence.png",
+    "valAddr" : "",
+    "relayerAddr" : "persistence1uj3pr0z77lpevw75zftqsqfeea5ae4htd56spx"
+}

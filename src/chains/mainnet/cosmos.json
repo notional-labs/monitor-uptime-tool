@@ -1,0 +1,11 @@
+{
+    "chain_name": "Gaia",
+    "coingecko": "cosmos",
+    "api":"https://cosmos.api.ping.pub",
+    "endpoint":"https://cosmos.api.ping.pub",
+    "sdk_version": "0.42.6",
+    "addr_prefix": "cosmos",
+    "logo": "https://dl.airtable.com/.attachments/e54f814bba8c0f9af8a3056020210de0/2d1155fb/cosmos-hub.svg",
+    "valAddr" : "cosmosvaloper1083svrca4t350mphfv9x45wq9asrs60cdmrflj",
+    "relayerAddr" : "cosmos16dc379m0qj64g4pr4nkl7ewak52qy2srf6xl03"
+}
