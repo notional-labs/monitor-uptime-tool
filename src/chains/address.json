@@ -14,5 +14,9 @@
     "regen" : {
         "valAddr" : "regenvaloper1083svrca4t350mphfv9x45wq9asrs60ct2p9a5",
         "relayerAddr" : ""
+    },
+    "terra-luna" : {
+        "valAddr" : "",
+        "relayerAddr" : "terra1jw8egufucqhgzgnv7zr88nrhn7zr5gq7vpp5ep"
     }
 }
