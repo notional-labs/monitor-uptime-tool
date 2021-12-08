@@ -1,7 +1,6 @@
 <!-- eslint-disable -->
 <template>
     <div class="d-flex justify-content-between align-self-stretch flex-wrap">
-          <span>No new tx relayer is produced for <strong>{{ no_tx_count }}</strong> blocks </span>
             <div
               v-for="(b,i) in blocks"
               :key="i"
@@ -16,7 +15,8 @@
               >&nbsp;</div>
             </router-link>
             </div>
-          </div>
+            <span>No new tx relayer is produced for <strong>{{ no_tx_count }}</strong> blocks </span>
+    </div>
           
 </template>
 <script>
@@ -82,19 +82,20 @@ export default {
         // filling 50 blocks
         let promise = Promise.resolve()
 
-        for (let i = height - 50; i < height; i += 1) {
+        for (let i = height - 1; i > height - 50; i -= 1) {
           // get block state
           console.log(i)
 
           // block is supposed to create first as placeholder
-          blocks.push({ sigs: "bg-light-success", height: i > 0 ? i : 0 })
+          blocks.unshift({ sigs: "bg-light-success", height: i > 0 ? i : 0 })
 
           // this part is supposed to get each block synchronously
           // I called this PromiseInitGroup
-          promise = promise.then(() => new Promise(resolve => {
-            this.handleTxFromBlock(i, resolve, true)
-            console.log(JSON.stringify(this.blocks, null, 2))
-          }))
+          if(i > height - 47){
+            promise = promise.then(() => new Promise(resolve => {
+              this.handleTxFromBlock(i, resolve, true)
+            }))
+          }
         }
 
         // render blocks
@@ -124,14 +125,14 @@ export default {
     handleTxFromBlock(height, resolve = null, change_mode = false){
       console.log("block " + height + " is get")
 
-      if(height > this.current_height){
+      if(height != this.current_height){
         this.current_height = height
         //reset state of getLatestTxSucessful for new height
         this.getLatestTxSucessful = false
       }
 
-      if(height <= this.current_height && this.getLatestTxSucessful){
-        return
+      if(height != this.current_height && this.getLatestTxSucessful){
+        return null
       }
 
       this.$http.getTxsByHeight(height, this.chain).then(res => {
@@ -155,7 +156,7 @@ export default {
         return null
       }
 
-      console.log("tx is get")
+      console.log("tx is get with txs length = " + res.txs.length)
 
       if (res.txs.length === 0){  
         return null
@@ -214,13 +215,17 @@ export default {
       return signal
     },
     //white block is block without tx
-    handleWhiteBlock(height, blocks){
+    handleWhiteBlock(height, blocks, change_mode = false){
       console.log("handling white block")
       const block = blocks.find(b => b.height === height)
-      if (typeof block === 'undefined') { // mei
+      if (!change_mode && !block) { 
+        console.log("add mode")
         if (blocks.length >= 50) blocks.shift()
         blocks.push({ sigs: "bg-light-success", height : height  })
         this.no_tx_count += 1
+      }else if(change_mode && block){
+        console.log("change mode")
+        this.$set(block, "sigs", "bg-light-success")
       }
     },
 
@@ -246,7 +251,7 @@ export default {
         this.$set(block, "sigs", signal)
       }
       else{
-        this.handleWhiteBlock(height, this.blocks)
+        this.handleWhiteBlock(height, this.blocks, change_mode)
       }
     }
   },

@@ -10,5 +10,9 @@
     "cosmos" : {
         "valAddr" : "",
         "relayerAddr" : "cosmos16dc379m0qj64g4pr4nkl7ewak52qy2srf6xl03"
+    },
+    "regen" : {
+        "valAddr" : "regenvaloper1083svrca4t350mphfv9x45wq9asrs60ct2p9a5",
+        "relayerAddr" : ""
     }
 }
