@@ -1,5 +1,7 @@
+/* eslint-disable */
 import fetch from 'node-fetch'
 // import axios from 'axios'
+/* eslint-disable */
 import store from '@/store'
 import compareVersions from 'compare-versions'
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx'
@@ -8,7 +10,6 @@ import {
   Proposal, ProposalTally, Proposer, StakingPool, Votes, Deposit,
   Validator, StakingParameters, Block, ValidatorDistribution, StakingDelegation, WrapStdTx, getUserCurrency,
 } from './data'
-import OsmosAPI from './osmos'
 
 function commonProcess(res) {
   if (res && Object.keys(res).includes('result')) {
@@ -24,10 +25,7 @@ export function keybase(identity) {
 }
 
 export default class ChainFetch {
-  constructor() {
-    this.osmosis = new OsmosAPI()
-  }
-
+  //============ CHAIN CONFIG ============
   getSelectedConfig() {
     let chain = store.state.chains.selected
     const lschains = localStorage.getItem('chains')
@@ -40,6 +38,8 @@ export default class ChainFetch {
     this.config = chain
     return this.config
   }
+
+  //============ END CHAIN CONFIG ============
 
   isModuleLoaded(name) {
     if (this.config.unload_module) {
@@ -84,9 +84,11 @@ export default class ChainFetch {
   async getTxsByRecipient(recipient) {
     return this.get(`/txs?message.recipient=${recipient}`)
   }
+//TODO : use api to get tx res.
+  async getTxsByHeight(height, config = null) {
+    const conf = config || this.getSelectedConfig()
 
-  async getTxsByHeight(height) {
-    return this.get(`/txs?tx.height=${height}`)
+    return this.get(`/cosmos/tx/v1beta1/txs?events=tx.height=${height}`, conf)
   }
 
   async getValidatorDistribution(address) {
@@ -115,10 +117,6 @@ export default class ChainFetch {
     return this.get('/cosmos/bank/v1beta1/supply').then(data => data.supply)
   }
 
-  async getStakingPool() {
-    return this.get('/staking/pool').then(data => new StakingPool().init(commonProcess(data)))
-  }
-
   async getMintingInflation() {
     if (this.isModuleLoaded('minting')) {
       return this.get('/minting/inflation').then(data => Number(commonProcess(data)))
@@ -133,12 +131,39 @@ export default class ChainFetch {
     })
   }
 
+  //============ Validator List ============
+
   async getValidatorList() {
     return this.get('/staking/validators').then(data => {
       const vals = commonProcess(data).map(i => new Validator().init(i))
       localStorage.setItem(`validators-${this.config.chain_name}`, JSON.stringify(vals))
       return vals
     })
+  }
+
+  async getBatchValidator() {
+    // get chain from local storage
+    const lschains = JSON.parse(localStorage.getItem('chains'))
+    // get validator from local storage
+    const addresses = JSON.parse(localStorage.getItem('addresses'))
+
+    let chains = []
+    Promise.all(Object.keys(lschains).map(async (key) => {
+      let config = lschains[key]
+      let chain = {}
+      if (!config.sdk_version) {
+        config.sdk_version = '0.33'
+      }
+
+      if (addresses[key]) {
+        const val = await this.get(`/staking/validators/${addresses[key].valAddr}`, config).then(data => new Validator().init(commonProcess(data)))
+        //    localStorage.setItem(`validator-${config.chain_name}`, JSON.stringify(val))
+        chain['validator'] = val
+        chain['config'] = config
+        chains.push(chain)
+      }
+    }));
+    return chains
   }
 
   async getValidatorListByHeight(height) {
@@ -148,6 +173,8 @@ export default class ChainFetch {
   async getStakingValidator(address) {
     return this.get(`/staking/validators/${address}`).then(data => new Validator().init(commonProcess(data)))
   }
+
+  //============ End Validator List ============
 
   async getSlashingParameters() {
     if (this.isModuleLoaded('slashing')) {
@@ -360,7 +387,7 @@ export default class ChainFetch {
     }
     return null
   }
-  
+
   // CoinMarketCap
   static async fetchCoinMarketCap(url) {
     const host = 'https://price.ping.pub'
