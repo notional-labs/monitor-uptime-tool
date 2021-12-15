@@ -27,7 +27,7 @@
     </b-card>
   </div>
 </template>
-
+<!-- eslint-disable -->
 <script>
 import {
   BRow, BCol, VBTooltip, BCard,
@@ -62,12 +62,25 @@ export default {
   computed: {
     uptime() {
       const vals = this.chains
+      let activeAddr = 0
+      const lschains = JSON.parse(localStorage.getItem('chains'))
+      for (let key in lschains) {
+        if (lschains[key].valAddr) {
+          activeAddr = activeAddr + 1
+          console.log(key)
+        }
+      }
       console.log(vals)
-      return vals.map(x => ({
-        validator: x.validator,
-        address: consensusPubkeyToHexAddress(x.validator.consensus_pubkey),
-        config: x.config,
-      }))
+      console.log(activeAddr)
+      console.log(Object.keys(lschains).length)
+      console.log(vals.length)
+      if (vals.length === activeAddr) {
+        return vals.map(x => ({
+          validator: x.validator,
+          address: consensusPubkeyToHexAddress(x.validator.consensus_pubkey),
+          config: x.config,
+        }))
+      }
     },
   },
 

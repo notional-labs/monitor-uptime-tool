@@ -19,7 +19,15 @@ function processMenu() {
       header: 'relayer',
     },
     {
+      title: 'Summary',
+      route: { name: 'relayer' },
+    },
+    {
       header: 'uptime',
+    },
+    {
+      title: 'Summary',
+      route: { name: 'uptime' },
     },
   ]
 

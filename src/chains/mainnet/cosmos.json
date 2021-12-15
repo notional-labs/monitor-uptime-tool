@@ -1,7 +1,7 @@
 {
     "chain_name": "Gaia",
     "coingecko": "cosmos",
-    "api":"https://cosmos.api.ping.pub",
+    "api":"https://lcd-cosmoshub.keplr.app",
     "endpoint":"https://cosmos.api.ping.pub",
     "sdk_version": "0.42.6",
     "addr_prefix": "cosmos",

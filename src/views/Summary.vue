@@ -28,32 +28,7 @@
     </b-row>
     <b-row>
       <b-col>
-        <summary-assets-component />
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
         <summary-parmeters-component :data="mint" />
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <summary-parmeters-component :data="staking" />
-      </b-col>
-    </b-row>
-    <b-row v-if="gov.items.length > 0">
-      <b-col>
-        <summary-parmeters-component :data="gov" />
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <summary-parmeters-component :data="distribution" />
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <summary-parmeters-component :data="slasing" />
       </b-col>
     </b-row>
   </div>
@@ -64,11 +39,10 @@ import {
   BRow, BCol, BAlert, BCard,
 } from 'bootstrap-vue'
 import {
-  formatNumber, formatTokenAmount, getUserCurrency, isToken, percent, timeIn, toDay, toDuration, tokenFormatter,
+  getUserCurrency, isToken, percent, timeIn, toDay, toDuration, tokenFormatter,
 } from '@/libs/data'
 
 import SummaryParmetersComponent from './SummaryParmetersComponent.vue'
-import SummaryAssetsComponent from './SummaryAssetsComponent.vue'
 import SummaryPriceChart from './SummaryPriceChart.vue'
 
 export default {
@@ -78,7 +52,6 @@ export default {
     BAlert,
     BCard,
     SummaryParmetersComponent,
-    SummaryAssetsComponent,
     SummaryPriceChart,
   },
   data() {
@@ -96,25 +69,9 @@ export default {
           { subtitle: 'inflation', icon: 'TrendingUpIcon', color: 'light-primary' },
         ],
       },
-      staking: {
-        title: 'Staking Parameters',
-        items: [],
-      },
-      distribution: {
-        title: 'Distribution Parameters',
-        items: [],
-      },
-      slasing: {
-        title: 'Slasing Parameters',
-        items: null,
-      },
       mint: {
         title: 'Mint Parameters',
         items: null,
-      },
-      gov: {
-        title: 'Governance Parameters',
-        items: [],
       },
     }
   },
@@ -159,20 +116,6 @@ export default {
       this.marketData = res
     })
 
-    this.$http.getStakingParameters().then(res => {
-      this.staking = this.normalize(res, 'Staking Parameters')
-      Promise.all([this.$http.getStakingPool(), this.$http.getBankTotal(res.bond_denom)])
-        .then(pool => {
-          const bondedAndSupply = this.chain.items.findIndex(x => x.subtitle === 'bonded_and_supply')
-          this.$set(this.chain.items[bondedAndSupply], 'title', `${formatNumber(formatTokenAmount(pool[0].bondedToken, 2, res.bond_denom), true, 0)}/${formatNumber(formatTokenAmount(pool[1].amount, 2, res.bond_denom), true, 0)}`)
-          const bondedRatio = this.chain.items.findIndex(x => x.subtitle === 'bonded_ratio')
-          this.$set(this.chain.items[bondedRatio], 'title', `${percent(pool[0].bondedToken / pool[1].amount)}%`)
-        })
-    })
-    this.$http.getSlashingParameters().then(res => {
-      this.slasing = this.normalize(res, 'Slashing Parameters')
-    })
-
     const conf = this.$http.getSelectedConfig()
     if (conf.excludes && conf.excludes.indexOf('mint') > -1) {
       this.mint = null
@@ -183,27 +126,6 @@ export default {
       })
       this.$http.getMintParameters().then(res => {
         this.mint = this.normalize(res, 'Minting Parameters')
-      })
-    }
-
-    this.$http.getDistributionParameters().then(res => {
-      this.distribution = this.normalize(res, 'Distribution Parameters')
-    })
-    if (conf.excludes && conf.excludes.indexOf('governance') > -1) {
-      this.gov.items = []
-    } else {
-      Promise.all([
-        this.$http.getGovernanceParameterDeposit(),
-        this.$http.getGovernanceParameterTallying(),
-        this.$http.getGovernanceParameterVoting(),
-      ]).then(data => {
-        let items = []
-        data.forEach(item => {
-          const values = this.normalize(item, '').items
-          items = items.concat(values)
-        })
-        this.gov.items = items
-        this.$set(this.gov, 'items', items)
       })
     }
   },

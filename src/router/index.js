@@ -128,6 +128,8 @@ router.beforeEach((to, from, next) => {
       next({ name: '/' })
     } else if (c === 'uptime') {
       next({ name: 'uptime' })
+    } else if (c === 'relayer') {
+      next({ name: 'relayer' })
     } else {
       next({ name: 'chain-404' })
     }

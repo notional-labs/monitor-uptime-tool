@@ -11,9 +11,9 @@
         :class="b.sigs && b.sigs[chain.address] ? b.sigs[chain.address] : 'bg-light-success'"
         class="m-auto"
       >&nbsp;</div>
-      </router-link>
-      </div>
-          </div>
+    </router-link>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -86,7 +86,7 @@ export default {
         blocks.push({ sigs, height })
         this.blocks = blocks
 
-        this.timer = setInterval(this.fetch_latest, 3000)
+        this.timer = setInterval(this.fetch_latest, 1000)
       })
     },
     initColor() {

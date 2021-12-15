@@ -1,7 +1,7 @@
 {
     "chain_name": "Cheqd",
     "coingecko": "terra-luna",
-    "api": "https://fcd.terra.dev",
+    "api": "https://api.cheqd.net",
     "endpoint": "https://fcd.terra.dev",
     "sdk_version": "0.44.2",
     "addr_prefix": "cheqd",
