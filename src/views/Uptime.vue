@@ -6,6 +6,7 @@
         no-body
         class="mb-1"
       >
+      <p style = "text-align: center">Found Notional validators in {{ this.uptime.length }} chains</p>
       </b-card>
       <b-row>
         <b-col
